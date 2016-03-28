@@ -1,20 +1,25 @@
 # P16_VI51_Project
 
 Subject 1: Simulation of Drones
-Tutor: Stéphane Galland & Franck Gechter
+
+Tutor: StÃ©phane Galland & Franck Gechter
+
 Drone becomes a means of transport for goods in cities. This project is interesting
 about modelling and simulation the drones moving in a city.
+
 This project aims to carry out a software of simulation of drones in a city. You will
 have to propose a model and software allowing to simulate the behaviors of drones.
 Simulation will stop when there is no more drone to simulate.
 
 Mandatory Elements:
-1.environment model
-2.movement behaviours
+
+1. environment model
+2. movement behaviours
 
 Optional Elements:
-1.Path Planning
-2.Graphical User Interface
+
+1. Path Planning
+2. Graphical User Interface
 
 How to :
   - Work with Eclipse SARL on Windows :
