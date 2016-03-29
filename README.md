@@ -30,3 +30,5 @@ How to :
     4. Go to Window > Preferences > SARL > Installed SREs.
     5. Add the janus project JAR as an SRE.
     6. Now you can create a SARL project !
+
+Lien trello : https://trello.com/b/12KJqELo/vi51-project
