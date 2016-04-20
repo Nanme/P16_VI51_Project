@@ -62,16 +62,16 @@
 			<artifactId>io.sarl.maven.sdk</artifactId>
 			<version>${sarl.version}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>io.sarl.maven</groupId> -->
-<!-- 			<artifactId>sarl-maven-plugin</artifactId> -->
-<!-- 			<version>0.3.0</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>io.sarl.lang</groupId> -->
-<!-- 			<artifactId>io.sarl.lang</artifactId> -->
-<!-- 			<version>0.3.1</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>io.sarl.maven</groupId> -->
+		<!-- <artifactId>sarl-maven-plugin</artifactId> -->
+		<!-- <version>0.3.0</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>io.sarl.lang</groupId> -->
+		<!-- <artifactId>io.sarl.lang</artifactId> -->
+		<!-- <version>0.3.1</version> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 
@@ -96,6 +96,21 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>com.googlecode.mavennatives</groupId>
+                <artifactId>maven-nativedependencies-plugin</artifactId>
+                <version>${natives.version}</version>
+                <executions>
+                    <execution>
+                        <id>unpacknatives</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <!--suppress MavenModelInspection (this line is for IDEA)-->
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 </project>
