@@ -11,6 +11,10 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+#project files
 /p16_vi51_project_drones/.classpath
 /p16_vi51_project_drones/.project
 /p16_vi51_project_drones/.settings/
+
+#target files
+/p16_vi51_project_drones/target/
