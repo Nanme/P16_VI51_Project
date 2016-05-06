@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package fr.utbm.vi51.prj.drone.ia.agt
+
+/**
+ * @author Lana Banana
+ *
+ */
+agent drone {
+	
+}

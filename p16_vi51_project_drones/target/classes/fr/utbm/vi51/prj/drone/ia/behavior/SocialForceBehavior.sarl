@@ -1,0 +1,32 @@
+/**
+ * 
+ */
+package fr.utbm.vi51.prj.drone.ia.^behavior
+
+import fr.utbm.vi51.prj.drone.framework.math.Point2f
+import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput
+import fr.utbm.vi51.prj.drone.ia.evt.Perception
+import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
+import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+
+/**
+ * @author Lana Banana
+ *
+ * Social Force Behavior STEERING mode
+ */
+class SocialForceBehavior implements MotionBehavior{
+	
+		public override runMotion(perception : Perception, 
+								  acceleration : float,
+								  target : Point2f) : BehaviorOutput {
+		// TODO Auto-generated action.
+
+		var repulsiveForce : Vector2f
+		//var position : perception.getPosition();
+
+		return new BehaviorOutput(DynamicType::STEERING) => [
+			linear = new Vector2f(0,0)
+		]
+	}
+	
+}
