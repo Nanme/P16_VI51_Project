@@ -19,13 +19,13 @@ public class Perception implements MobileObject, Serializable {
 	private Point2f position;
 	private final float angle;
 	private final Serializable type;
-	private final float maxLinearSpeed;
 	private final float maxLinearAcceleration;
 	private Vector2f currentLinearMotion;
-	private final float maxAngularSpeed;
 	private final float maxAngularAcceleration;
 	private final float currentAngularSpeed;
 	private final String name;
+	
+	private final float radius;
 	
 	/**
 	 * @param perceivedObject is the perceived object.
@@ -42,6 +42,7 @@ public class Perception implements MobileObject, Serializable {
 		this.objectId = perceivedObject.getID();
 		this.name = perceivedObject.getName();
 		this.shape = perceivedObject.getShape();
+		this.radius = perceivedObject.getRadius();
 		this.position = perceivedObject.getPosition().clone();
 		if (type == null) {
 			type = perceivedObject.getType();
@@ -54,17 +55,13 @@ public class Perception implements MobileObject, Serializable {
 			MobileObject mo = (MobileObject) perceivedObject;
 			this.angle = mo.getAngle();
 			this.maxAngularAcceleration = mo.getMaxAngularAcceleration();
-			this.maxAngularSpeed = mo.getMaxAngularSpeed();
 			this.maxLinearAcceleration = mo.getMaxLinearAcceleration();
-			this.maxLinearSpeed = mo.getMaxLinearSpeed();
 			this.currentAngularSpeed = mo.getCurrentAngularSpeed();
 			this.currentLinearMotion = mo.getCurrentLinearMotion().clone();
 		} else {
 			this.angle = 0f;
 			this.maxAngularAcceleration = 0f;
-			this.maxAngularSpeed = 0f;
 			this.maxLinearAcceleration = 0f;
-			this.maxLinearSpeed = 0f;
 			this.currentAngularSpeed = 0f;
 			this.currentLinearMotion = null;
 		}
@@ -165,16 +162,6 @@ public class Perception implements MobileObject, Serializable {
 	}
 
 	@Override
-	public float getMaxLinearSpeed() {
-		return this.maxLinearSpeed;
-	}
-
-	@Override
-	public float getMaxAngularSpeed() {
-		return this.maxAngularSpeed;
-	}
-
-	@Override
 	public float getMaxLinearAcceleration() {
 		return this.maxLinearAcceleration;
 	}
@@ -221,6 +208,12 @@ public class Perception implements MobileObject, Serializable {
 			return this.name;
 		}
 		return super.toString();
+	}
+
+	@Override
+	public float getRadius() {
+		// TODO Auto-generated method stub
+		return this.radius;
 	}
 		
 }

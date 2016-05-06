@@ -15,18 +15,6 @@ public interface MobileObject extends SituatedObject {
 	 * @return the orientation direction.
 	 */
 	Vector2f getDirection();
-	
-	/** Replies the max linear speed.
-	 * 
-	 * @return the max linear speed.
-	 */
-	float getMaxLinearSpeed();
-
-	/** Replies the max angular speed.
-	 * 
-	 * @return the max angular speed.
-	 */
-	float getMaxAngularSpeed();
 
 	/** Replies the max linear acceleration.
 	 * 

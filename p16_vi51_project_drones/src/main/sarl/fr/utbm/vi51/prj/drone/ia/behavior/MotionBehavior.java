@@ -14,5 +14,4 @@ public interface MotionBehavior {
 	 */
 	public BehaviorOutput runMotion(Perception perception, float acceleration, Point2f target);
 	
-
 }

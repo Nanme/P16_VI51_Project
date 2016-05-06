@@ -4,10 +4,11 @@
 package fr.utbm.vi51.prj.drone.ia.^behavior
 
 import fr.utbm.vi51.prj.drone.framework.math.Point2f
-import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput
-import fr.utbm.vi51.prj.drone.ia.evt.Perception
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput
+import fr.utbm.vi51.prj.drone.ia.agt.drone
+import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
+import fr.utbm.vi51.prj.drone.ia.evt.Perception
 
 /**
  * @author Lana Banana
@@ -16,13 +17,40 @@ import fr.utbm.vi51.prj.drone.framework.math.Vector2f
  */
 class SocialForceBehavior implements MotionBehavior{
 	
+		val agt : drone;
+		
+		new(agt : drone){
+			this.agt = agt;
+		}
+		
+		def getNearestPoint(cx : float, cy : float, cz : float, cradius : float,
+							ax : float, ay : float, az : float) : Point2f
+		{
+			var a : Vector2f = new Vector2f(ax - cx, ay - cy/*, az - cz */)
+			if(a.lengthSquared <= (cradius*cradius))
+			{
+				return new Point2f(ax, ay /*az */)
+			}
+		a.length = cradius
+		return new Point2f(a.x + ax, a.y + ay /*a.z + az */)				
+		}
+		
 		public override runMotion(perception : Perception, 
 								  acceleration : float,
 								  target : Point2f) : BehaviorOutput {
 		// TODO Auto-generated action.
 
-		var repulsiveForce : Vector2f
-		//var position : perception.getPosition();
+//		var repulsiveForce : Vector2f
+//		var position : Point2f = drone.getPosition();
+//		
+//		
+//		for(o as Perception : agt.getPerceptions())
+//		{
+//			var f = position - o.getNearestPoint(position);
+//		}
+//		
+//		var attractiveForce : Vector2f
+
 
 		return new BehaviorOutput(DynamicType::STEERING) => [
 			linear = new Vector2f(0,0)

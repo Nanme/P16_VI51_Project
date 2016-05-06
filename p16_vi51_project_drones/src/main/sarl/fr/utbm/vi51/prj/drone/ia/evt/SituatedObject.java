@@ -45,6 +45,12 @@ public interface SituatedObject extends ShapedObject, Cloneable, Comparable<Situ
 	 * @return the y-coordinate of the position of this object.
 	 */
 	float getY();
+	
+	/** Replies the radius of the object.
+	 * 
+	 * @return the radius of this object.
+	 */
+	float getRadius();
 
 	/** Replies the position of the object.
 	 * 

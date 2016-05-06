@@ -14,9 +14,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 
 	private static final long serialVersionUID = -2670464828720893140L;
 	
-	private final float maxLinearSpeed;
 	private final float maxLinearAcceleration;
-	private final float maxAngularSpeed;
 	private final float maxAngularAcceleration;
 	
 	private float angle = 0;
@@ -26,17 +24,13 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	/**
 	 * @param id the identifier of the object.
 	 * @param shape the shape of the body, considering that it is centered at the (0,0) position.
-	 * @param maxLinearSpeed is the maximal linear speed.
 	 * @param maxLinearAcceleration is the maximal linear acceleration.
-	 * @param maxAngularSpeed is the maximal angular speed.
 	 * @param maxAngularAcceleration is the maximal angular acceleration.
 	 */
-	public AbstractMobileObject(UUID id, Shape2f<?> shape, float maxLinearSpeed, float maxLinearAcceleration, float maxAngularSpeed, float maxAngularAcceleration) {
+	public AbstractMobileObject(UUID id, Shape2f<?> shape, float maxLinearAcceleration, float maxAngularAcceleration) {
 		super(id, shape);
-		this.maxLinearSpeed = Math.abs(maxLinearSpeed);
 		this.maxLinearAcceleration = Math.abs(maxLinearAcceleration);
 		this.maxAngularAcceleration = Math.abs(maxAngularAcceleration);
-		this.maxAngularSpeed = Math.abs(maxAngularSpeed);
 	}
 	
 	@Override
@@ -75,18 +69,6 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	protected void setDirection(float dx, float dy) {
 		this.angle = new Vector2f(dx, dy).getOrientationAngle();
 		this.currentAngularSpeed = 0;
-	}
-
-	/** {@inheritDoc}
-	 */
-	public float getMaxLinearSpeed() {
-		return this.maxLinearSpeed;
-	}
-
-	/** {@inheritDoc}
-	 */
-	public float getMaxAngularSpeed() {
-		return this.maxAngularSpeed;
 	}
 
 	/** {@inheritDoc}
@@ -233,7 +215,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 			float speed = MathUtil.clamp(
 					(v.dot(this.linearMove) < 0f) ? -length : length, 
 					0f, 
-					getMaxLinearSpeed());
+					getMaxLinearAcceleration());
 
 			// Compute the Newton law, part 2 (from speed to distance)
 			float factor = clock.getLastStepDuration() * Math.abs(speed) / length;
@@ -242,40 +224,6 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 		}
 		
 		return new Vector2f();
-	}
-
-	/** Compute a kinematic move according to the linear move and to
-	 * the internal attributes of this object.
-	 * 
-	 * @param move is the requested motion, expressed with speed.
-	 * @param clock is the simulation time manager
-	 * @return the linear instant motion.
-	 */
-	Vector2f computeKinematicTranslation(Vector2f move, TimeManager clock) {
-		float speed = move.getLength();
-		if (speed != 0f) {
-			// Apply Newton-Euler-1 law
-			float factor = clock.getLastStepDuration() * MathUtil.clamp(speed, 0, getMaxLinearSpeed()) / speed;
-			return move.operator_multiply(factor);
-		}
-		return new Vector2f();
-	}
-
-	/** Compute a kinematic move according to the angular move and to
-	 * the internal attributes of this object.
-	 * 
-	 * @param move is the requested motion with speed.
-	 * @param clock is the simulation time manager
-	 * @return the angular instant motion.
-	 */
-	float computeKinematicRotation(float move, TimeManager clock) {
-		float speed = Math.abs(move);
-		if (speed != 0f) {
-			// Apply Newton-Euler-1 law
-			float factor = clock.getLastStepDuration() * MathUtil.clamp(speed, 0, getMaxAngularSpeed()) / speed;
-			return move * factor;
-		}
-		return 0f;
 	}
 
 	/** Compute a steering move according to the angular move and to
@@ -311,8 +259,8 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 			// Clamp the speed
 			float speed = MathUtil.clamp(
 					v, 
-					-getMaxAngularSpeed(), 
-					getMaxAngularSpeed());
+					-getMaxAngularAcceleration(), 
+					getMaxAngularAcceleration());
 
 			// Compute the Newton law, part 2 (from speed to distance)
 			float factor = clock.getLastStepDuration() * Math.abs(speed) / Math.abs(v);

@@ -25,10 +25,6 @@ package fr.utbm.vi51.prj.drone.ia.evt;
  * @version $Name$ $Revision$ $Date$
  */
 public enum DynamicType {
-
-	/** Kinematic entity.
-	 */
-	KINEMATIC,
 	
 	/** Steering entity.
 	 */

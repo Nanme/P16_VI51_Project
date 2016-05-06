@@ -1,0 +1,48 @@
+
+package fr.utbm.vi51.prj.drone.ia.agt
+
+import fr.utbm.vi51.prj.drone.ia.^behavior.MotionBehavior
+import fr.utbm.vi51.prj.drone.ia.evt.PerceptionEvent
+import fr.utbm.vi51.prj.drone.ia.evt.SimulationAgentReady
+import fr.utbm.vi51.prj.drone.ia.formation.Formation
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+
+agent Leader extends drone {
+	
+	uses PhysicEnvironment, Lifecycle, DefaultContextInteractions
+	
+	var socialFBehavior : MotionBehavior
+	
+	var formation : Formation
+	
+	on Initialize {
+		super._handle_Initialize_0(occurrence)
+
+		// Store a reference to the formation pattern 
+		this.formation = occurrence.parameters.get(3) as Formation
+
+		//this.socialFBehavior =  new SocialForceBehavior
+		
+		emit(new SimulationAgentReady)
+	}
+	
+	on PerceptionEvent {
+		// TODO write the code for the leader of the formation.
+				
+		formation.globalPosition = occurrence.body.position
+		formation.globalOrientation = occurrence.body.direction
+
+//			var o = this.seekBehaviour.runSeek(
+//				occurrence.body.position,
+//				occurrence.body.currentLinearMotion.length,
+//				occurrence.body.maxLinearSpeed,
+//				mouseTarget.position)
+//				o.emitInfluence		
+			
+		
+		
+	}
+
+}

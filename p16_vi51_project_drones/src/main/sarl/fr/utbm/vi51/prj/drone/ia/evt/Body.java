@@ -18,33 +18,14 @@ public interface Body {
 	 * @param linearInfluence is the linear influence to apply on the object.
 	 * @param angularInfluence is the angular influence to apply on the object.
 	 */
-	void influenceKinematic(Vector2f linearInfluence, float angularInfluence);
-	
-	/** Invoked to send the influence to the environment.
-	 * 
-	 * @param linearInfluence is the linear influence to apply on the object.
-	 * @param angularInfluence is the angular influence to apply on the object.
-	 */
 	void influenceSteering(Vector2f linearInfluence, float angularInfluence);
 
 	/** Invoked to send the influence to the environment.
 	 * 
 	 * @param linearInfluence is the linear influence to apply on the object.
 	 */
-	void influenceKinematic(Vector2f linearInfluence);
-	
-	/** Invoked to send the influence to the environment.
-	 * 
-	 * @param linearInfluence is the linear influence to apply on the object.
-	 */
 	void influenceSteering(Vector2f linearInfluence);
-	
-	/** Invoked to send the influence to the environment.
-	 * 
-	 * @param angularInfluence is the angular influence to apply on the object.
-	 */
-	void influenceKinematic(float angularInfluence);
-	
+
 	/** Invoked to send the influence to the environment.
 	 * 
 	 * @param angularInfluence is the angular influence to apply on the object.

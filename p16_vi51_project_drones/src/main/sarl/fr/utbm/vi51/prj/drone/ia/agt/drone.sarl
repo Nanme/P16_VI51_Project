@@ -3,10 +3,68 @@
  */
 package fr.utbm.vi51.prj.drone.ia.agt
 
+import fr.utbm.vi51.prj.drone.ia.evt.Perception
+import java.util.Collection
+import io.sarl.core.Lifecycle
+import io.sarl.core.Initialize
+import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
+import java.util.UUID
+import fr.utbm.vi51.prj.drone.ia.evt.Influence
+import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+import java.util.List
+
 /**
  * @author Lana Banana
  *
  */
 agent drone {
+	
+	def live()
+	{
+		//var target : Target
+		var p = perceptions
+			
+	}
+	
+	def getPerceptions() : Collection<Perception> {
+		return null;
+	}
+	
+	
+	uses PhysicEnvironment, Lifecycle
+	
+	var behaviorType : DynamicType
+	
+	on Initialize {
+//		var physicSkill = new StandardPhysicEnvironment(
+//			occurrence.parameters.get(0) as UUID,
+//			occurrence.parameters.get(1) as UUID)
+//		this.behaviorType = occurrence.parameters.get(2) as DynamicType
+//		setSkill(PhysicEnvironment, physicSkill)
+	}
+	
+	def getMaxLinear(p : Perception) : float {
+		p.maxLinearAcceleration
+	}
+	
+	def getMaxAngular(p : Perception) : float {
+		p.maxAngularAcceleration
+	}
+
+	def emitInfluence(output : BehaviorOutput , influences : Influence*) {
+		if (output !== null) {
+			influenceSteering(output.linear, output.angular, influences)
+		} else {
+			influenceSteering(new Vector2f, 0f, influences)
+		}
+	}
+
+	def first(list : List<Perception>) : Perception {
+		if (list.isEmpty) null else list.get(0)
+	}
+
+//	on StopSimulation {
+//		killMe
+//	}
 	
 }

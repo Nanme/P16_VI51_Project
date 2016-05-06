@@ -30,9 +30,8 @@ public class AgentBody extends AbstractMobileObject implements Body {
 	 * @param maxAngularAcceleration is the maximal angular acceleration.
 	 * @param frustum the field-of-view associated to the body.
 	 */
-	public AgentBody(UUID id, Shape2f<?> shape, float maxLinearSpeed, float maxLinearAcceleration,
-			float maxAngularSpeed, float maxAngularAcceleration, Frustum frustum) {
-		super(id, shape, maxLinearSpeed, maxLinearAcceleration, maxAngularSpeed, maxAngularAcceleration);
+	public AgentBody(UUID id, Shape2f<?> shape, float maxLinearAcceleration, float maxAngularAcceleration, Frustum frustum) {
+		super(id, shape, maxLinearAcceleration, maxAngularAcceleration);
 		assert (frustum == null || Objects.equals(id, frustum.getOwner()));
 		this.frustum = frustum;
 		setType("BODY");
@@ -77,11 +76,10 @@ public class AgentBody extends AbstractMobileObject implements Body {
 				MotionInfluence mi = (MotionInfluence) influence;
 				if (mi.getInfluencedObject() == null || mi.getInfluencedObject().equals(getID())) {
 					switch(mi.getType()) {
-					case KINEMATIC:
-						influenceKinematic(mi.getLinearInfluence(), mi.getAngularInfluence());
-						break;
-					case STEERING:
+						case STEERING:
 						influenceSteering(mi.getLinearInfluence(), mi.getAngularInfluence());
+						break;
+					default:
 						break;
 					}
 				} else {
@@ -93,28 +91,6 @@ public class AgentBody extends AbstractMobileObject implements Body {
 		}
 	}
 
-	/** Invoked to send the influence to the environment.
-	 * 
-	 * @param linearInfluence is the linear influence to apply on the object.
-	 * @param angularInfluence is the angular influence to apply on the object.
-	 */
-	public void influenceKinematic(Vector2f linearInfluence, float angularInfluence) {
-		Vector2f li;
-		if (linearInfluence!=null) {
-			li = new Vector2f(linearInfluence);
-			float nSpeed = li.getLength();
-			if (nSpeed>getMaxLinearSpeed()) {
-				li.normalize();
-				li.scale(getMaxLinearSpeed());
-			}
-		}
-		else {
-			li = new Vector2f();
-		}
-		float ai = MathUtil.clamp(angularInfluence, -getMaxAngularSpeed(), getMaxAngularSpeed());
-		this.motionInfluence = new MotionInfluence(DynamicType.KINEMATIC, getID(), li, ai);
-	}
-	
 	/** Invoked to send the influence to the environment.
 	 * 
 	 * @param linearInfluence is the linear influence to apply on the object.
@@ -136,14 +112,6 @@ public class AgentBody extends AbstractMobileObject implements Body {
 		float ai = MathUtil.clamp(angularInfluence, -getMaxAngularAcceleration(), getMaxAngularAcceleration());
 		this.motionInfluence = new MotionInfluence(DynamicType.STEERING, getID(), li, ai);
 	}
-
-	/** Invoked to send the influence to the environment.
-	 * 
-	 * @param linearInfluence is the linear influence to apply on the object.
-	 */
-	public void influenceKinematic(Vector2f linearInfluence) {
-		influenceKinematic(linearInfluence, 0f);
-	}
 	
 	/** Invoked to send the influence to the environment.
 	 * 
@@ -151,14 +119,6 @@ public class AgentBody extends AbstractMobileObject implements Body {
 	 */
 	public void influenceSteering(Vector2f linearInfluence) {
 		influenceSteering(linearInfluence, 0f);
-	}
-	
-	/** Invoked to send the influence to the environment.
-	 * 
-	 * @param angularInfluence is the angular influence to apply on the object.
-	 */
-	public void influenceKinematic(float angularInfluence) {
-		influenceKinematic(null, angularInfluence);
 	}
 	
 	/** Invoked to send the influence to the environment.
@@ -210,5 +170,9 @@ public class AgentBody extends AbstractMobileObject implements Body {
 		this.perceptions = perceptions;
 	}
 
-
+	@Override
+	public float getRadius() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
