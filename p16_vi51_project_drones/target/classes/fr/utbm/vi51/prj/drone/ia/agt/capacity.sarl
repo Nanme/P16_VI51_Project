@@ -1,0 +1,17 @@
+
+package fr.utbm.vi51.prj.drone.ia.agt
+
+import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+import fr.utbm.vi51.prj.drone.ia.evt.Influence
+
+capacity PhysicEnvironment {
+
+	/** Invoked to send the influence to the environment.
+	 * 
+	 * @param linearInfluence is the linear influence to apply on the object.
+	 * @param angularInfluence is the angular influence to apply on the object.
+	 * @param otherInfluences other influences to emit in parallel to the motion influence.
+	 */
+	def influenceSteering(linearInfluence : Vector2f = null, angularInfluence : float = 0f, otherInfluences : Influence*)
+
+}
