@@ -17,10 +17,6 @@ import fr.utbm.vi51.prj.utils.tree.node.OctTreeNode;
  */
 public final class OctTree<D, N extends OctTreeNode<D,N>> extends AbstractTree<D, N>{
 	
-	private final ArrayList<N> children = new ArrayList<>(4);
-	
-	private D data;
-	
 	/**
 	 * 
 	 */

@@ -13,7 +13,7 @@ public abstract class AbstractTreeNode<D, N extends AbstractTreeNode<D, N>> impl
 	
 	private WeakReference<N> parent;
 	
-	private D data;
+	protected D data;
 
 	/**
 	 * @param parent
