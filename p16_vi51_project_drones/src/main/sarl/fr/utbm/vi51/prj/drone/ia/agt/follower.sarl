@@ -1,0 +1,54 @@
+
+package fr.utbm.vi51.prj.drone.ia.agt
+
+import fr.utbm.vi51.prj.drone.ia.evt.PerceptionEvent
+import fr.utbm.vi51.prj.drone.ia.evt.SimulationAgentReady
+import fr.utbm.vi51.prj.drone.ia.formation.Anchor
+import fr.utbm.vi51.prj.drone.ia.formation.FormationAssignmentPolicy
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+
+agent Follower extends drone {
+	
+	uses PhysicEnvironment, Lifecycle, DefaultContextInteractions
+	
+//	var seekBehaviour = new SeekBehaviour
+//	var alignBehaviour = new AlignBehaviour
+	
+	var formationSlot : Anchor
+	
+	on Initialize {
+		super._handle_Initialize_0(occurrence)
+
+		var assignment = occurrence.parameters.get(4) as FormationAssignmentPolicy
+		this.formationSlot = assignment.assignAnchorToMe()
+
+//		this.seekBehaviour =  new SteeringSeekBehaviour
+//		this.alignBehaviour = new SteeringAlignBehaviour
+
+		emit(new SimulationAgentReady)
+	}
+	
+	on PerceptionEvent {
+		// TODO write the code for the leader of the formation.
+		
+//				val o1 = this.seekBehaviour.runSeek(
+//				occurrence.body.position,
+//				occurrence.body.currentLinearMotion.length,
+//				occurrence.body.maxLinearSpeed,
+//				this.formationSlot.globalPosition)
+//				
+//				val o2 = this.alignBehaviour.runAlign(
+//				Vector2f::toOrientationVector(occurrence.body.angle),
+//				occurrence.body.maxAngularSpeed,
+//				occurrence.body.maxAngularAcceleration,
+//				this.formationSlot.globalOrientation)
+//				
+//				var o3 = new BehaviorOutput(DynamicType.STEERING) => [
+//					linear = o1.linear;
+//					angular = o2.angular
+//				]
+//				o3.emitInfluence
+	}
+}
