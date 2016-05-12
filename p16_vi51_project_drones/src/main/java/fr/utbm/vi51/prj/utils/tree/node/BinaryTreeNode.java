@@ -113,7 +113,6 @@ public class BinaryTreeNode<D, N extends BinaryTreeNode<D, N>> extends AbstractT
 	 */
 	@Override
 	public boolean isLeaf() {
-		// TODO Auto-generated method stub
 		return (leftChild == null && rightChild == null);
 	}
 
