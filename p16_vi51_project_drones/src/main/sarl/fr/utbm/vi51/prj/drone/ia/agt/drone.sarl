@@ -3,14 +3,16 @@
  */
 package fr.utbm.vi51.prj.drone.ia.agt
 
-import fr.utbm.vi51.prj.drone.ia.evt.Perception
-import java.util.Collection
-import io.sarl.core.Lifecycle
-import io.sarl.core.Initialize
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
-import java.util.UUID
-import fr.utbm.vi51.prj.drone.ia.evt.Influence
+import fr.utbm.vi51.prj.drone.framework.math.MathUtil
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
+import fr.utbm.vi51.prj.drone.ia.evt.Influence
+import fr.utbm.vi51.prj.drone.ia.evt.Perception
+import fr.utbm.vi51.prj.drone.ia.evt.StopSimulation
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import java.lang.annotation.Target
+import java.util.Collection
 import java.util.List
 
 /**
@@ -19,9 +21,15 @@ import java.util.List
  */
 agent drone {
 	
+	val STOP_RADIUS = MathUtil.PI/10f
+	val SLOW_RADIUS = MathUtil.PI/4f
+	val CIRCLE_DISTANCE = 20f
+	val CIRCLE_RADIUS = 10f
+	val MAX_ROTATION = MathUtil.PI/4f
+	
 	def live()
 	{
-		//var target : Target
+		var target : Target
 		var p = perceptions
 			
 	}
@@ -63,8 +71,8 @@ agent drone {
 		if (list.isEmpty) null else list.get(0)
 	}
 
-//	on StopSimulation {
-//		killMe
-//	}
+	on StopSimulation {
+		killMe
+	}
 	
 }

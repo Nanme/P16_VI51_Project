@@ -1,11 +1,13 @@
 package fr.utbm.vi51.prj.drone.ia.agt;
 
+import fr.utbm.vi51.prj.drone.framework.math.MathUtil;
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f;
 import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput;
 import fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment;
 import fr.utbm.vi51.prj.drone.ia.evt.DynamicType;
 import fr.utbm.vi51.prj.drone.ia.evt.Influence;
 import fr.utbm.vi51.prj.drone.ia.evt.Perception;
+import fr.utbm.vi51.prj.drone.ia.evt.StopSimulation;
 import io.sarl.core.AgentKilled;
 import io.sarl.core.AgentSpawned;
 import io.sarl.core.Destroy;
@@ -19,6 +21,7 @@ import io.sarl.lang.core.Agent;
 import io.sarl.lang.core.AgentContext;
 import io.sarl.lang.core.BuiltinCapacitiesProvider;
 import io.sarl.lang.core.Percept;
+import java.lang.annotation.Target;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +35,18 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlSpecification("0.3")
 @SuppressWarnings("all")
 public class drone extends Agent {
+  protected final float STOP_RADIUS = (MathUtil.PI / 10f);
+  
+  protected final float SLOW_RADIUS = (MathUtil.PI / 4f);
+  
+  protected final float CIRCLE_DISTANCE = 20f;
+  
+  protected final float CIRCLE_RADIUS = 10f;
+  
+  protected final float MAX_ROTATION = (MathUtil.PI / 4f);
+  
   protected void live() {
+    Target target = null;
     Collection<Perception> p = this.getPerceptions();
   }
   
@@ -77,6 +91,11 @@ public class drone extends Agent {
       _xifexpression = list.get(0);
     }
     return _xifexpression;
+  }
+  
+  @Percept
+  public void _handle_StopSimulation_1(final StopSimulation occurrence) {
+    this.killMe();
   }
   
   /**

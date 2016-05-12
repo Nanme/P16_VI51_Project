@@ -41,13 +41,16 @@ public class DisplayTest  {
          Display.setFullscreen(false);
          DisplayMode d[] = Display.getAvailableDisplayModes();
          for (int i = 0; i < d.length; i++) {
-             if (d[i].getWidth() == 1280
-                 && d[i].getHeight() == 960
+        	 System.out.println(d[i].getWidth()+"     "+ d[i].getHeight());
+             if (d[i].getWidth() == 1366
+                 && d[i].getHeight() == 768
                  && d[i].getBitsPerPixel() == 32) {
                  displayMode = d[i];
+                
                  break;
              }
          }
+         System.out.println();
          Display.setDisplayMode(displayMode);
          Display.setTitle("LWJGL Voxel engine");
          Display.create();
