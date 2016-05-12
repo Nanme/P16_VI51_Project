@@ -1,12 +1,20 @@
 package fr.utbm.vi51.prj.drone;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glFrustum;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import java.awt.Toolkit;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-
-import static org.lwjgl.opengl.GL11.*;
 
 public class DisplayTest  {
 	
@@ -41,8 +49,9 @@ public class DisplayTest  {
          Display.setFullscreen(false);
          DisplayMode d[] = Display.getAvailableDisplayModes();
          for (int i = 0; i < d.length; i++) {
-             if (d[i].getWidth() == 1280
-                 && d[i].getHeight() == 960
+        	 System.out.println("mode "+ d[i].getWidth()+" "+ d[i].getHeight()+" "+d[i].getBitsPerPixel());
+             if (d[i].getWidth() == Toolkit.getDefaultToolkit().getScreenSize().getWidth()
+                 && d[i].getHeight() == Toolkit.getDefaultToolkit().getScreenSize().getHeight()
                  && d[i].getBitsPerPixel() == 32) {
                  displayMode = d[i];
                  break;
@@ -92,8 +101,8 @@ public class DisplayTest  {
         float dy        = 0.0f;
         float dt        = 1.0f; //length of frame
        
-        float mouseSensitivity = 0.15f;
-        float movementSpeed = 0.03f; //move 10 units per second
+        float mouseSensitivity = 0.1f;
+        float movementSpeed = 0.05f; //move 10 units per second
 
         //hide the mouse
         Mouse.setGrabbed(true);
@@ -161,15 +170,18 @@ public class DisplayTest  {
     	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	 	glLoadIdentity();  
   
-    	 	glTranslatef(015f,0.0f,-15f);             
+    	 	glTranslatef(015f,0.0f,-15f); 
+    	 	
     	 	//roatate the pitch around the X axis
     	 	glRotatef(pitch, 1.0f, 0.0f, 0.0f);
     	 	//roatate the yaw around the Y axis
 	        glRotatef(yaw, 0.0f, 1.0f, 0.0f);
 	        //translate to the position vector's location
+	        glTranslatef(x, y, z);
+	        
 	        if(y>1)
 	        	y=1;
-	        glTranslatef(x, y, z);
+	        
 	        test.renderCity();
     }
     
