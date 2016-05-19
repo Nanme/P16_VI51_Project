@@ -1,3 +1,4 @@
+
 package fr.utbm.vi51.prj.drone;
 
 import org.lwjgl.input.Keyboard;
@@ -13,7 +14,9 @@ public class DisplayTest  {
 	 float xrot=0,yrot=0,zrot=0,x=0,y=0,z=0;
 	 private static boolean gameRunning=true;
 	 City test = new City();   
+	 DroneDisplay drone =new DroneDisplay(5, 1, 1, 1, 0, 0, 0, 30);
 	 DisplayMode displayMode;
+	 float truc = 0;
 	  //the rotation around the Y axis of the camera
      private float yaw= 0.0f;
      //the rotation around the X axis of the camera
@@ -162,9 +165,18 @@ public class DisplayTest  {
     
     private void render() {
     	 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    	 drone.setX(0 );
+ 	     drone.setY(-truc );
+ 	 	 drone.setZ(0 );
+ 	 	 
+ 	 	
+ 	 	
+    	 glPushMatrix();
     	 	glLoadIdentity();  
-  
-    	 	glTranslatef(015f,0.0f,-15f);             
+    	 	truc=truc+0.001f;
+    	 	
+    	 	
+    	 	glTranslatef(00f,0f,0f);             
     	 	//roatate the pitch around the X axis
     	 	glRotatef(pitch, 1.0f, 0.0f, 0.0f);
     	 	//roatate the yaw around the Y axis
@@ -173,7 +185,11 @@ public class DisplayTest  {
 	        if(y>1)
 	        	y=1;
 	        glTranslatef(x, y, z);
+	       
+	      glPopMatrix();
 	        test.renderCity();
+    	 	
+    	 	drone.renderDrone();
     }
     
     void perspectiveGL( double fovY, double aspect, double zNear, double zFar )
@@ -229,4 +245,3 @@ public class DisplayTest  {
         }
    
 }
-

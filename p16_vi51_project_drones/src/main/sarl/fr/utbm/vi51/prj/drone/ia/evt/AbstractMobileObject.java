@@ -56,7 +56,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	 * 
 	 * @param angle
 	 */
-	protected void setAngle(float angle) {
+	public void setAngle(float angle) {
 		this.angle = angle;
 		this.currentAngularSpeed = 0;
 	}
@@ -106,7 +106,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	 * @param rotation is the real instant motion. 
 	 * @param simulationDuration is the time during which the motion is applied.
 	 */
-	void rotate(float rotation, float simulationDuration) {
+	public void rotate(float rotation, float simulationDuration) {
 		if (Double.isNaN(rotation)) {
 			System.err.println(LocalizedString.getString(getClass(), "INVALID_ROTATION", getName()));
 		} else if (Double.isNaN(simulationDuration)) {
@@ -121,7 +121,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void setPosition(float x, float y) {
+	public void setPosition(float x, float y) {
 		super.setPosition(x, y);
 		this.linearMove.set(0,0);
 	}
@@ -135,7 +135,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	 * @param worldHeight is the height of the world.
 	 * @return the real motion.
 	 */
-	Vector2f move(float dx, float dy, float simulationDuration, float worldWidth, float worldHeight) {
+	public Vector2f move(float dx, float dy, float simulationDuration, float worldWidth, float worldHeight) {
 		// Ensure that the motion in inside the bounds of the world.
 		Vector2f r = new Vector2f(dx, dy);
 		Shape2f<?> currentShape = getShape();
@@ -184,7 +184,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	 * @param clock is the simulation time manager
 	 * @return the linear instant motion.
 	 */
-	Vector2f computeSteeringTranslation(Vector2f move, TimeManager clock) {
+	public Vector2f computeSteeringTranslation(Vector2f move, TimeManager clock) {
 		float length = move.getLength();
 
 		Vector2f v;
@@ -233,7 +233,7 @@ public abstract class AbstractMobileObject extends AbstractSituatedObject implem
 	 * @param clock is the simulation time manager
 	 * @return the angular instant motion.
 	 */
-	float computeSteeringRotation(float move, TimeManager clock) {
+	public float computeSteeringRotation(float move, TimeManager clock) {
 		float v;
 		
 		if (move != 0f) {

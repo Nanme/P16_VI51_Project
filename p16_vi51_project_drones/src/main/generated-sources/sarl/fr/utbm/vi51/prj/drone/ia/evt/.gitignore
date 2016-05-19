@@ -3,9 +3,3 @@
 /.SimulationAgentReady.java._trace
 /.StartSimulation.java._trace
 /.StopSimulation.java._trace
-/.events.sarlbin
-/InfluenceEvent.java
-/PerceptionEvent.java
-/SimulationAgentReady.java
-/StartSimulation.java
-/StopSimulation.java

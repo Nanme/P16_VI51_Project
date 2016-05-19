@@ -2,14 +2,5 @@
 /.Leader.java._trace
 /.PhysicEnvironment.java._trace
 /.StandardPhysicEnvironment.java._trace
-/.capacity.sarlbin
+/.AbstractOVNI.java._trace
 /.drone.java._trace
-/.drone.sarlbin
-/.follower.sarlbin
-/.leader.sarlbin
-/.skill.sarlbin
-/Follower.java
-/Leader.java
-/PhysicEnvironment.java
-/StandardPhysicEnvironment.java
-/drone.java
