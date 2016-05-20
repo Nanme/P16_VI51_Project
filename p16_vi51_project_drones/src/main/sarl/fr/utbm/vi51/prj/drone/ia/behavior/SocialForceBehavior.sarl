@@ -22,7 +22,7 @@ class SocialForceBehavior implements MotionBehavior{
 		new(agt : drone){
 			this.agt = agt;
 		}
-		
+	
 		def getNearestPoint(cx : float, cy : float, cz : float, cradius : float,
 							ax : float, ay : float, az : float) : Point2f
 		{

@@ -2,9 +2,14 @@
 /.Leader.java._trace
 /.PhysicEnvironment.java._trace
 /.StandardPhysicEnvironment.java._trace
+<<<<<<< HEAD
+/.AbstractOVNI.java._trace
+/.drone.java._trace
+=======
 /.drone.java._trace
 /Follower.java
 /Leader.java
 /PhysicEnvironment.java
 /StandardPhysicEnvironment.java
 /drone.java
+>>>>>>> df3293e0b83b534b7eb9fc1ec406957ac36c326b

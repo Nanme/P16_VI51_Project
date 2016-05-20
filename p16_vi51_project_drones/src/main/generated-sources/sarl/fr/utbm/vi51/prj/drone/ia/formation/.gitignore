@@ -1,12 +1,13 @@
 /.Anchor.java._trace
+<<<<<<< HEAD
+/.FIFOAssignmentPolicy.java._trace
+/.Formation.java._trace
+/.FormationAssignmentPolicy.java._trace
+/.CircleFormationFactory.java._trace
+=======
 /.CircleFormationFactory.java._trace
 /.FIFOAssignmentPolicy.java._trace
 /.Formation.java._trace
 /.FormationAssignmentPolicy.java._trace
+>>>>>>> df3293e0b83b534b7eb9fc1ec406957ac36c326b
 /.FormationFactory.java._trace
-/Anchor.java
-/CircleFormationFactory.java
-/FIFOAssignmentPolicy.java
-/Formation.java
-/FormationAssignmentPolicy.java
-/FormationFactory.java

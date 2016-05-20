@@ -3,68 +3,57 @@
  */
 package fr.utbm.vi51.prj.drone.ia.agt
 
-import fr.utbm.vi51.prj.drone.ia.evt.Perception
-import java.util.Collection
-import io.sarl.core.Lifecycle
-import io.sarl.core.Initialize
+import fr.utbm.vi51.prj.drone.DroneDisplay
+import fr.utbm.vi51.prj.drone.framework.math.MathUtil
+import fr.utbm.vi51.prj.drone.framework.math.Point2f
+import fr.utbm.vi51.prj.drone.ia.^behavior.SeekBehaviour
+import fr.utbm.vi51.prj.drone.ia.^behavior.SteeringSeekBehaviour
 import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
-import java.util.UUID
-import fr.utbm.vi51.prj.drone.ia.evt.Influence
-import fr.utbm.vi51.prj.drone.framework.math.Vector2f
-import java.util.List
+import fr.utbm.vi51.prj.drone.ia.evt.PerceptionEvent
+import fr.utbm.vi51.prj.drone.ia.evt.SimulationAgentReady
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
 
 /**
  * @author Lana Banana
  *
  */
-agent drone {
+agent drone extends AbstractOVNI{
 	
-	def live()
-	{
-		//var target : Target
-		var p = perceptions
-			
-	}
+		uses PhysicEnvironment, Lifecycle, DefaultContextInteractions
 	
-	def getPerceptions() : Collection<Perception> {
-		return null;
-	}
+	var seekBehaviour : SeekBehaviour
 	
+	var dispDrone : DroneDisplay
 	
-	uses PhysicEnvironment, Lifecycle
-	
-	var behaviorType : DynamicType
+	val STOP_RADIUS = MathUtil.PI/10f
+	val SLOW_RADIUS = MathUtil.PI/4f
+	val WANDER_CIRCLE_DISTANCE = 20f
+	val WANDER_CIRCLE_RADIUS = 10f
+	val WANDER_MAX_ROTATION = MathUtil.PI/4f
 	
 	on Initialize {
-//		var physicSkill = new StandardPhysicEnvironment(
-//			occurrence.parameters.get(0) as UUID,
-//			occurrence.parameters.get(1) as UUID)
-//		this.behaviorType = occurrence.parameters.get(2) as DynamicType
-//		setSkill(PhysicEnvironment, physicSkill)
+		super._handle_Initialize_0(occurrence)
+		if (this.behaviorType == DynamicType::STEERING) {
+			this.seekBehaviour = new SteeringSeekBehaviour
+		} 
+		emit(new SimulationAgentReady)
 	}
 	
-	def getMaxLinear(p : Perception) : float {
-		p.maxLinearAcceleration
+	on PerceptionEvent {
+		//FIXME: See the inherited functions for helping you to write the code
+		//var mouseTarget = occurrence.perceptions.findFirst[ it.type == "TARGET" ];
+		var target = new Point2f(15,15)
+		//if(mouseTarget !== null)
+		//{
+		var o = this.seekBehaviour.runSeek(
+			occurrence.body.position,
+			occurrence.body.currentLinearMotion.length,
+			occurrence.body.maxLinearAcceleration,
+			target)
+			o.emitInfluence		
+			
+		//}
 	}
-	
-	def getMaxAngular(p : Perception) : float {
-		p.maxAngularAcceleration
-	}
-
-	def emitInfluence(output : BehaviorOutput , influences : Influence*) {
-		if (output !== null) {
-			influenceSteering(output.linear, output.angular, influences)
-		} else {
-			influenceSteering(new Vector2f, 0f, influences)
-		}
-	}
-
-	def first(list : List<Perception>) : Perception {
-		if (list.isEmpty) null else list.get(0)
-	}
-
-//	on StopSimulation {
-//		killMe
-//	}
-	
 }

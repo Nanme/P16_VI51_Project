@@ -3,8 +3,11 @@
 /.SimulationAgentReady.java._trace
 /.StartSimulation.java._trace
 /.StopSimulation.java._trace
+<<<<<<< HEAD
+=======
 /InfluenceEvent.java
 /PerceptionEvent.java
 /SimulationAgentReady.java
 /StartSimulation.java
 /StopSimulation.java
+>>>>>>> df3293e0b83b534b7eb9fc1ec406957ac36c326b

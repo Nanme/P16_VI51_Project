@@ -141,7 +141,7 @@ public class AgentBody extends AbstractMobileObject implements Body {
 	 * 
 	 * @return the influence.
 	 */
-	List<Influence> consumeOtherInfluences() {
+	public List<Influence> consumeOtherInfluences() {
 		List<Influence> otherInfluences = this.otherInfluences;
 		this.otherInfluences = new ArrayList<>();
 		for(Influence i : otherInfluences) {
@@ -154,7 +154,7 @@ public class AgentBody extends AbstractMobileObject implements Body {
 	 * 
 	 * @return the influence.
 	 */
-	MotionInfluence consumeMotionInfluence() {
+	public MotionInfluence consumeMotionInfluence() {
 		MotionInfluence mi = this.motionInfluence;
 		this.motionInfluence = null;
 		if (mi!=null) mi.setEmitter(getID());
@@ -165,7 +165,7 @@ public class AgentBody extends AbstractMobileObject implements Body {
 	 * 
 	 * @param perceptions
 	 */
-	void setPerceptions(List<Perception> perceptions) {
+	public void setPerceptions(List<Perception> perceptions) {
 		assert(perceptions!=null);
 		this.perceptions = perceptions;
 	}
