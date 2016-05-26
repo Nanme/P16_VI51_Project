@@ -15,7 +15,7 @@ public class DroneDisplay {
 	    
 	    protected float orientation;
 	    
-	    DroneDisplay( float length, float r, float g, float b, float x, float y, float z, float o )
+	    public DroneDisplay( float length, float r, float g, float b, float x, float y, float z, float o )
 		{
 	    	this.cube=new Cube(length, r, g, b);
 		   this.x = x;
