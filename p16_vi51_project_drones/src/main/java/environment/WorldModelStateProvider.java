@@ -11,12 +11,6 @@ import fr.utbm.vi51.prj.drone.framework.math.Point2f;
  */
 public interface WorldModelStateProvider {
 
-	/** Set the mouse target.
-	 * 
-	 * @param target
-	 */
-	public void setMouseTarget(Point2f target);
-
 	/** Replies the width of the environment.
 	 * 
 	 * @return the width of the environment.

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import fr.utbm.vi51.prj.drone.DroneDisplay;
 import fr.utbm.vi51.prj.drone.framework.math.Circle2f;
 import fr.utbm.vi51.prj.drone.framework.math.MathUtil;
 import fr.utbm.vi51.prj.drone.framework.math.Point2f;
@@ -48,7 +49,7 @@ import io.sarl.lang.core.Percept;
  */
 public class WorldModel extends AbstractEnv implements WorldModelStateProvider {
 
-	private final static float RABBIT_SIZE = 20f;
+	private final static float DRONE_SIZE = 20f;
 	
 	//private MouseTarget mouseTarget = null;
 	
@@ -58,13 +59,6 @@ public class WorldModel extends AbstractEnv implements WorldModelStateProvider {
 	 */
 	public WorldModel(float width, float height) {
 		super(width, height, new StepTimeManager(500));
-	}
-	
-	/** {@inheritDoc}
-	 */
-	public void setMouseTarget(Point2f target) {
-//		if (target==null) this.mouseTarget = null;
-//		else this.mouseTarget = new MouseTarget(target.getX(), target.getY());
 	}
 
 	/**
@@ -126,21 +120,6 @@ public class WorldModel extends AbstractEnv implements WorldModelStateProvider {
 					rotation = computeSteeringRotation(body1, inf1.getAngularInfluence(), timeManager);
 				}
 				
-				Shape2f<?> body1Bounds = body1.getShape();
-				
-				// Trivial collision detection
-				for(int index2=index1+1; index2<influenceList.size(); index2++) {
-					MotionInfluence inf2 = influenceList.get(index2);
-					AgentBody body2 = getAgentBodyFor(inf2.getEmitter());
-					if (body2!=null) {
-						Shape2f<?> body2Bounds = body2.getShape();
-						if (body1Bounds.intersects(body2Bounds)) {
-							move.set(0,0);
-							break;
-						}
-					}
-				}
-				
 				if (!move.isEmpty() || rotation != 0f) {
 					actions.add(new AnimatAction(body1, move, rotation));
 				}
@@ -173,25 +152,29 @@ public class WorldModel extends AbstractEnv implements WorldModelStateProvider {
 		return Collections.emptyList();
 	}
 	
-	/** Create the body of a rabbit.
+	/** Create the body of a drone.
 	 */
-	public void createRabbit() {
-		AgentBody body = new AgentBody(
-				UUID.randomUUID(),
-				new Circle2f(0f, 0f, RABBIT_SIZE), // body
-				5f,						// max linear speed m/s
-				.5f,						// max linear acceleration (m/s)/s
-				null); // no frustum since computePerceptionsFor() is not using this parameter
-		body.setName(LocalizedString.getString(WorldModel.class, "RABBIT", getAgentBodyNumber() + 1));
-		addAgentBody(
-				body,
-				randomPosition(),
-				(float) Math.random() * MathUtil.TWO_PI);
+	public void createDrone() {
+		
+
+		 DroneDisplay drone = new DroneDisplay(5, 1, 1, 1, 0, 0, 0, 30);
+		
+//		AgentBody body = new AgentBody(
+//				UUID.randomUUID(),
+//				new Circle2f(0f, 0f, DRONE_SIZE), // body
+//				5f,						// max linear speed m/s
+//				.5f,						// max linear acceleration (m/s)/s
+//				null); // no frustum since computePerceptionsFor() is not using this parameter
+//		body.setName(LocalizedString.getString(WorldModel.class, "DRONE", getAgentBodyNumber() + 1));
+//		addAgentBody(
+//				body,
+//				randomPosition(),
+//				(float) Math.random() * MathUtil.TWO_PI);
 	}
 	
 	protected Point2f randomPosition() {
-		float x = (float) Math.random() * getWidth() - RABBIT_SIZE;
-		float y = (float) Math.random() * getHeight() - RABBIT_SIZE;
+		float x = (float) Math.random() * getWidth() - DRONE_SIZE;
+		float y = (float) Math.random() * getHeight() - DRONE_SIZE;
 		return new Point2f(x, y);
 	}
 
