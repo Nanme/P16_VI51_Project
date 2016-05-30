@@ -13,22 +13,22 @@ import fr.utbm.vi51.prj.utils.OctTreeZone;
  * @author renaud
  *
  */
-public final class OctTreeNode<D, N extends OctTreeNode<D, N>> extends AbstractTreeNode<D, N> {
+public final class OctTreeNode<D> extends AbstractTreeNode<D, OctTreeNode<D>> {
 	
 	private D data;
 	private final OctTreeZone zone;
-	private final List<N> children = new ArrayList<>();
+	private final List<OctTreeNode<D>> children = new ArrayList<>();
 	
 	/**
 	 * 
 	 */
-	public OctTreeNode(N parent, D data, OctTreeZone zone) {
+	public OctTreeNode(OctTreeNode<D> parent, D data, OctTreeZone zone) {
 		super(parent, data);
 		this.zone = zone;
 	}
 
 	@Override
-	public Collection<N> getChildren() {
+	public Collection<OctTreeNode<D>> getChildren() {
 		return children;
 	}
 
@@ -38,16 +38,16 @@ public final class OctTreeNode<D, N extends OctTreeNode<D, N>> extends AbstractT
 	}
 
 	@Override
-	public N getChildAt(int index) {
+	public OctTreeNode<D> getChildAt(int index) {
 		return children.get(index);
 	}
 
 	@Override
-	public int indexOf(N child) {
+	public int indexOf(OctTreeNode<D> child) {
 		return children.indexOf(child);
 	}
 	
-	public N getChildAtZone(OctTreeZone zone){
+	public OctTreeNode<D> getChildAtZone(OctTreeZone zone){
 		return children.get(zone.getPosition());
 	}
 	
