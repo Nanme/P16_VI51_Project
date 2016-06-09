@@ -19,3 +19,4 @@ hs_err_pid*
 
 #target files
 /p16_vi51_project_drones/target/
+/p16_vi51_project_drones/src/main/generated-sources/
