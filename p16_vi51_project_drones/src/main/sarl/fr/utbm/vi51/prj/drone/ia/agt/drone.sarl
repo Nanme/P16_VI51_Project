@@ -3,57 +3,54 @@
  */
 package fr.utbm.vi51.prj.drone.ia.agt
 
-import fr.utbm.vi51.prj.drone.DroneDisplay
-import fr.utbm.vi51.prj.drone.framework.math.MathUtil
 import fr.utbm.vi51.prj.drone.framework.math.Point2f
-import fr.utbm.vi51.prj.drone.ia.^behavior.SeekBehaviour
+import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+import fr.utbm.vi51.prj.drone.ia.^behavior.DynamicType
+import fr.utbm.vi51.prj.drone.ia.^behavior.SteeringAlignBehaviour
 import fr.utbm.vi51.prj.drone.ia.^behavior.SteeringSeekBehaviour
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
-import fr.utbm.vi51.prj.drone.ia.evt.PerceptionEvent
-import fr.utbm.vi51.prj.drone.ia.evt.SimulationAgentReady
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
 import io.sarl.core.Lifecycle
 
-/**
- * @author Lana Banana
- *
- */
 agent drone extends AbstractOVNI{
+	uses  Lifecycle, DefaultContextInteractions
+		
+	var seekBehaviour : SteeringSeekBehaviour
+	var alignBehaviour : SteeringAlignBehaviour
 	
-		uses PhysicEnvironment, Lifecycle, DefaultContextInteractions
 	
-	var seekBehaviour : SeekBehaviour
-	
-	var dispDrone : DroneDisplay
-	
-	val STOP_RADIUS = MathUtil.PI/10f
-	val SLOW_RADIUS = MathUtil.PI/4f
-	val WANDER_CIRCLE_DISTANCE = 20f
-	val WANDER_CIRCLE_RADIUS = 10f
-	val WANDER_MAX_ROTATION = MathUtil.PI/4f
-	
-	on Initialize {
-		super._handle_Initialize_0(occurrence)
-		if (this.behaviorType == DynamicType::STEERING) {
-			this.seekBehaviour = new SteeringSeekBehaviour
-		} 
-		emit(new SimulationAgentReady)
+	on Initialize{
+		super._handle_Initialize_0(occurrence) 
+		emit(new agentReady)
+		//println(" drone : Je m'initialise")
 	}
-	
-	on PerceptionEvent {
-		//FIXME: See the inherited functions for helping you to write the code
-		//var mouseTarget = occurrence.perceptions.findFirst[ it.type == "TARGET" ];
-		var target = new Point2f(15,15)
-		//if(mouseTarget !== null)
-		//{
-		var o = this.seekBehaviour.runSeek(
-			occurrence.body.position,
-			occurrence.body.currentLinearMotion.length,
-			occurrence.body.maxLinearAcceleration,
-			target)
-			o.emitInfluence		
+	on Perception{
+			var _position = new Point2f(occurrence.body.getBody().getX(),occurrence.body.getBody().getZ());
+			var _length = occurrence.body.currentLinearMotion.length
+			var _maxLinearAcceleration = occurrence.body.maxLinearAcceleration
+			var _targetPosition = new Point2f(30,30);
 			
-		//}
+			this.seekBehaviour = new SteeringSeekBehaviour
+			var o1 = this.seekBehaviour.runSeek(
+				_position,
+				_length,
+				_maxLinearAcceleration,
+				_targetPosition);
+
+			var _angle = occurrence.body.getLinearVelocity();
+			var _maxAngularSpeed = occurrence.body.getCurrentAngularSpeed
+			var _maxAngular = occurrence.body.getMaxAngularSpeed
+			var _targetOrientatoin = new Vector2f(1,1);
+			
+			this.alignBehaviour = new SteeringAlignBehaviour(2, 3, 4)
+			var o2 = this.alignBehaviour.runAlign(
+				_angle,
+				_maxAngularSpeed,
+				_maxAngular,
+				_targetOrientatoin);
+				
+			var o3 = new BehaviorOutput(null, o1.linear, o2.angular, DynamicType::STEERING);
+			o3.emitInfluence(occurrence.time)
+
 	}
 }

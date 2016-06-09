@@ -2,8 +2,10 @@ package fr.utbm.vi51.prj.drone;
 
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
+
+import fr.utbm.vi51.prj.drone.framework.math.Vector2f;
+
 import static org.lwjgl.opengl.GL11.glRotatef;
 
 public class DroneDisplay {
@@ -12,6 +14,9 @@ public class DroneDisplay {
 	    protected float x; 
 	    protected float y;
 	    protected float z;
+	    protected float angle;
+	    protected float angularVelocity=0;
+	    protected Vector2f linearVelocity=new Vector2f(0,0);
 	    
 	    protected float orientation;
 	    
@@ -46,6 +51,35 @@ public class DroneDisplay {
 	        	glRotatef(orientation, 0, 1, 0 );
 		        cube.renderCube();  
 	        glPopMatrix();
+		}
+
+		public float getX() {
+			// TODO Auto-generated method stub
+			return x;
+		}
+
+		public float getY() {
+			// TODO Auto-generated method stub
+			return y;
+		}
+
+		public Vector2f getLinearVelocity() {
+			// TODO Auto-generated method stub
+			return linearVelocity;
+		}
+
+		public float getAngularVelocity() {
+			// TODO Auto-generated method stub
+			return angularVelocity;
+		}
+
+		public float getAngle() {
+			// TODO Auto-generated method stub
+			return angle;
+		}
+
+		public float getZ() {
+			  return z;
 		}
 	    
 }

@@ -20,21 +20,24 @@
  */
 package fr.utbm.vi51.prj.drone.ia.agt
 
+import fr.utbm.vi51.prj.drone.DisplayTest
+import fr.utbm.vi51.prj.drone.framework.math.Point2f
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f
-import fr.utbm.vi51.prj.drone.framework.util.AddressUUIDScope
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
-import fr.utbm.vi51.prj.drone.ia.evt.Influence
-import fr.utbm.vi51.prj.drone.ia.evt.InfluenceEvent
-import fr.utbm.vi51.prj.drone.ia.evt.MotionInfluence
+import fr.utbm.vi51.prj.environment.AgentBody
+import fr.utbm.vi51.prj.environment.Environment
+import fr.utbm.vi51.prj.utils.tree.Tree
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.lang.core.Address
 import io.sarl.util.OpenEventSpace
-import java.lang.reflect.Array
+import io.sarl.util.Scopes
+import java.awt.Window
+import java.util.List
+import java.util.Random
 import java.util.UUID
-import fr.utbm.vi51.prj.drone.ia.evt.KillInfluence
+import fr.utbm.vi51.prj.drone.framework.util.AddressUUIDScope
 
-skill StandardPhysicEnvironment implements PhysicEnvironment {
+skill StandardPhysicEnvironment implements PhysicEnvironment { 
 
 	uses DefaultContextInteractions, Behaviors
 
@@ -42,51 +45,244 @@ skill StandardPhysicEnvironment implements PhysicEnvironment {
 	val environmentID : UUID
 	var physicSpace : OpenEventSpace
 	var myAdr : Address
-	
+
 	new (spaceID : UUID, environmentID : UUID) {
 		this.environmentID = environmentID
 		this.spaceID = spaceID
 	}
 
-	override install {
+
+	override install { 
 		do {
-			this.physicSpace = defaultContext.getSpace(this.spaceID)
+			this.physicSpace = defaultContext.getSpace(this.spaceID) 
 			Thread::yield
-		} while (this.physicSpace === null)
-		this.physicSpace.register(asEventListener)
-		this.myAdr = this.physicSpace.getAddress(owner.ID)
+		} while (this.physicSpace == null)
+//		this.physicSpace.register(asEventListener)
+		this.myAdr = this.physicSpace.getAddress(owner.ID)   
 	}
 	
-	override uninstall() {
+/*	override uninstall() {  
 		var ^event = new InfluenceEvent(new KillInfluence)
 		^event.source = this.myAdr
 		this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
 		this.physicSpace = null
-	}
+	}*/
+	
 
-	override influenceSteering(linearInfluence : Vector2f = null, angularInfluence : float = 0f, otherInfluences : Influence*) {
-		var mi : MotionInfluence
-		if (linearInfluence === null) {
-			mi = new MotionInfluence(DynamicType::STEERING, angularInfluence)
-		} else {
-			mi = new MotionInfluence(DynamicType::STEERING, linearInfluence, angularInfluence)
-		}
-		emitInfluences(mi, otherInfluences)
+	
+	def influenceAttack(attackSpeed : int = 0, target : UUID = null, time : float = 0f) {
+//		var ^event = new ShootInfluence (attackSpeed, target, time)
+//		^event.source = this.myAdr
+//		this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
 	}
 	
-	def emitInfluences(motionInfluence : MotionInfluence, otherInfluences : Influence*) {
-		var influences : Influence[]
-		if (otherInfluences.isEmpty) {
-			influences = Array::newInstance(typeof(Influence), 1) as Influence[]
-			influences.set(0, motionInfluence)
-		} else {
-			influences = Array::newInstance(typeof(Influence), otherInfluences.length + 1) as Influence[]
-			influences.set(0, motionInfluence)
-			System::arraycopy(otherInfluences, 0, influences, 1, otherInfluences.length)
+	override influenceSteering( time : float = 0f, linearInfluence : Vector2f, angularInfluence : float, otherInfluences : Influence*) {
+		// TODO Auto-generated action.
+		var event1 = new MotionInfluence(time, linearInfluence , angularInfluence)
+		//environment.getDrones().getBody()
+		event1.source = this.myAdr
+		this.physicSpace.emit(event1, new AddressUUIDScope(this.environmentID))
+	}
+}
+
+skill DefaultMapManagerSkill implements MapManager {
+	
+	uses DefaultContextInteractions
+	
+	val width : float
+	val height : float
+	val random : Random = new Random()
+	
+	var environment : Environment
+	var gui : DisplayTest
+	var GUI : Window
+	new (width : float, height : float) {
+			this.width = width
+			this.height = height
+	}
+		override install {
+		/**where is the constructor of the map according to its size? */
+//		this.environment = new Environment(this.width,this.height)
+//		GUI = new Window(this.environment)
+	}
+	 
+	override getBodyCount : int {
+		/** create a method to get size of the objectlist */
+		 return environment.getDrones().size()
+	}
+	
+	override resolveInfluences(actions : List<BehaviorOutput>) : boolean {
+//		
+//		for( change : actions){
+//			if(change.influenceType.equals(ConstantContainer.MOTION_TYPE)){
+//				var body = getAgentBody(change.getEmitter).getBody()
+//				var velocity = change.getVelocity
+//				var force = new Vec2(velocity.getX(),velocity.getY())
+//				body.setLinearVelocity(force)
+//			}else if(change.influenceType.equals(ConstantContainer.SHOOT_TYPE)){
+//				var body = getAgentBody(change.getEmitter)
+//				var target = getAgentBody(change.getTarget)
+//				target.takeDamage(body.getDamagePerStep)
+//			}
+
+//		}
+		for(action : actions){
+			var body = environment.getAgentBody(action.getId).getBody()
+			body.setX(body.getX()+ action.getLinear().x * 0.001f);
+			body.setZ(body.getZ()+ action.getLinear().y * 0.001f);
+			
+//				var velocity = change.getVelocity
+//				var force = new Vec2(velocity.getX(),velocity.getY())
+//				body.setLinearVelocity(force)
 		}
-		var ^event = new InfluenceEvent(influences)
-		^event.source = this.myAdr
-		this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+		false
+	}
+	/**
+	 * calcul de toutes les perceptions -> utile seulement pour le général
+	 */
+ 	override sendPerceptions(time : float) {
+		
+		for (drone : environment.getDrones()) {
+			if(drone!=null){
+				var percevaibles = newArrayList
+				var pos = new Point2f(drone.getBody().getX(), drone.getBody().getY())
+				var perceptionEvent = new Perception(time,drone.getId,percevaibles,pos,drone)
+				var adr=defaultSpace.getAddress(drone.getId)
+				emit(perceptionEvent ,Scopes::addresses(adr))
+			}
+			
+//			percevaibles = body.computePerception
+			
+//			
+			
+////			System.out.printf("\nPerception de l'UUID : "+body.getAgentId()+"\ntime: "+time+" position: " +pos);
+////			System.out.printf("\nPercevaibles :\n");
+////			for(per : percevaibles){
+////				System.out.printf("object : "+per+"\n")
+////			}
+//			var adr=defaultSpace.getAddress(body.getId)
+//
+		}
+		
+	}
+	
+	override getMapWidth : float {
+		this.width
+	}
+	
+	override getMapHeight : float {
+		this.height
+	}
+	
+	override getAllObjects : Tree {
+//		this.environment.world.getObjectList()
+		
+	}
+	
+	override getAgentBody(id : UUID) : AgentBody {
+		
+//		this.environment.world.getAgentBody(id)
+	}
+	
+	override createUnit(perceptionDistance : float, team : int) : AgentBody {
+		// TODO Auto-generated action.
+//		var x : int
+//		var y : int
+//		if (team == 1 ){
+//			x = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_X)
+//			y = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_Y)
+//			while (!environment.world.canMoveInside(x, y)) {
+//				x = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_X)
+//				y = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_Y)
+//			}
+//		} else {
+//			x = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_X)
+//			y = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_Y)
+//			x+=110
+//			y+=110
+//			while (!environment.world.canMoveInside(x, y)) {
+//				x = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_X)
+//				y = this.random.nextInt(ConstantContainer.RANDOM_SPAWN_Y)
+//				x+=110
+//				y+=110
+//			}
+//			Min + (int)(Math.random() * ((Max - Min) + 1));
+
+//		}
+//		return this.environment.world.createBody(typeof(AgentBody),x,y,null,team,this.environment.getjBoxWorld(),perceptionDistance)
+	var x : float
+	var z : float
+	var r : Random
+	r= new Random();
+	var nombreAleatoire = r.nextInt(5) + 1
+	if(nombreAleatoire==1)
+		z=0
+	else if (nombreAleatoire==2)
+		z=-50
+	else if (nombreAleatoire==3)
+		z=-25
+	else if (nombreAleatoire==4)
+		z=25
+	else 
+		z=50
+	var body = new AgentBody(r.nextInt(150)-80,0,z, 2, UUID.randomUUID(), perceptionDistance)
+	environment.addDrone(body)
+	return body
+	}
+
+
+	override createMapSurroundings {
+		environment = new Environment();
+		gui = new DisplayTest();
+		gui.setEnv(environment)
+		
+	}
+	
+	override RunJbox {
+		
+//		this.environment.runJBox()
+	}
+	
+	override createWindow {
+		gui.Start();
+//		this.GUI.updateWindow()
+	}
+
+	override updateWindow {
+	//	gui.Start();
+//		this.GUI.updateWindow()
+	}
+	
+	override printTree {
+//		this.environment.printMap()
+	}
+	 
+	override updateTree {
+//		var agentToKill : ArrayList<UUID> = new ArrayList<UUID>()
+//		this.environment.updateTree(agentToKill)
+//		for(id : agentToKill){
+//			var adr=defaultSpace.getAddress(id)
+//			emit(new KillAgent,Scopes::addresses(adr))
+//		}
+	}
+	
+	override SpawnButtonRequestA : boolean {
+//		if (!this.environment.getEventFire().isEmpty()){
+// 			if (this.environment.getEventFire().element().getUpdateAction.equals("SpawnA")){
+// 				this.environment.getEventFire().take()
+// 				return true
+// 			}
+// 		}
+ 		return false
+	}
+	override SpawnButtonRequestB : boolean {
+//		if (!this.environment.getEventFire().isEmpty()){
+// 			if (this.environment.getEventFire().element().getUpdateAction.equals("SpawnB")){
+// 				this.environment.getEventFire().take()
+// 				return true
+// 			}
+// 		}
+ 		return false
 	}
 	
 }

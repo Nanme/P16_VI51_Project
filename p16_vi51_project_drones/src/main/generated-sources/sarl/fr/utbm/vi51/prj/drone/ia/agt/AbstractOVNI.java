@@ -1,14 +1,13 @@
 package fr.utbm.vi51.prj.drone.ia.agt;
 
-import com.google.common.base.Objects;
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f;
 import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput;
+import fr.utbm.vi51.prj.drone.ia.agt.EndOfGame;
+import fr.utbm.vi51.prj.drone.ia.agt.Influence;
+import fr.utbm.vi51.prj.drone.ia.agt.KillAgent;
 import fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment;
 import fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment;
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType;
-import fr.utbm.vi51.prj.drone.ia.evt.Influence;
-import fr.utbm.vi51.prj.drone.ia.evt.Perception;
-import fr.utbm.vi51.prj.drone.ia.evt.StopSimulation;
+import fr.utbm.vi51.prj.environment.Perceivable;
 import io.sarl.core.AgentKilled;
 import io.sarl.core.AgentSpawned;
 import io.sarl.core.Destroy;
@@ -30,8 +29,6 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlSpecification("0.3")
 @SuppressWarnings("all")
 public class AbstractOVNI extends Agent {
-  protected DynamicType behaviorType;
-  
   @Percept
   public void _handle_Initialize_0(final Initialize occurrence) {
     Object _get = occurrence.parameters[0];
@@ -39,40 +36,24 @@ public class AbstractOVNI extends Agent {
     StandardPhysicEnvironment physicSkill = new StandardPhysicEnvironment(
       ((UUID) _get), 
       ((UUID) _get_1));
-    Object _get_2 = occurrence.parameters[2];
-    this.behaviorType = ((DynamicType) _get_2);
     this.<StandardPhysicEnvironment>setSkill(PhysicEnvironment.class, physicSkill);
   }
   
   @Pure
-  protected float getMaxLinear(final Perception p) {
-    float _xifexpression = (float) 0;
-    boolean _equals = Objects.equal(this.behaviorType, DynamicType.STEERING);
-    if (_equals) {
-      _xifexpression = p.getMaxLinearAcceleration();
-    }
-    return _xifexpression;
+  protected float getMaxLinear(final Perceivable p) {
+    return p.getMaxLinearSpeed();
   }
   
   @Pure
-  protected float getMaxAngular(final Perception p) {
-    float _xifexpression = (float) 0;
-    boolean _equals = Objects.equal(this.behaviorType, DynamicType.STEERING);
-    if (_equals) {
-      _xifexpression = p.getMaxAngularAcceleration();
-    }
-    return _xifexpression;
+  protected float getMaxAngular(final Perceivable p) {
+    return p.getMaxAngularSpeed();
   }
   
-  protected void emitInfluence(final BehaviorOutput output) {
+  protected void emitInfluence(final BehaviorOutput output, final float time) {
     if ((output != null)) {
-      DynamicType _type = output.getType();
-      boolean _tripleEquals = (_type == DynamicType.STEERING);
-      if (_tripleEquals) {
-        Vector2f _linear = output.getLinear();
-        float _angular = output.getAngular();
-        this.influenceSteering(_linear, _angular);
-      }
+      Vector2f _linear = output.getLinear();
+      float _angular = output.getAngular();
+      this.influenceSteering(_linear, _angular);
     }
   }
   
@@ -82,14 +63,19 @@ public class AbstractOVNI extends Agent {
   }
   
   @Percept
-  public void _handle_StopSimulation_1(final StopSimulation occurrence) {
+  public void _handle_EndOfGame_1(final EndOfGame occurrence) {
+    this.killMe();
+  }
+  
+  @Percept
+  public void _handle_KillAgent_2(final KillAgent occurrence) {
     this.killMe();
   }
   
   /**
-   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.ia.evt.Influence[])}.
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
    * 
-   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.ia.evt.Influence[])
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.ia.agt.Influence[])
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(PhysicEnvironment.class)
@@ -98,20 +84,20 @@ public class AbstractOVNI extends Agent {
   }
   
   /**
-   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.ia.evt.Influence[])}.
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
    * 
-   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.ia.evt.Influence[])
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(PhysicEnvironment.class)
-  protected void influenceSteering(final float angularInfluence, final Influence... otherInfluences) {
-    getSkill(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.class).influenceSteering(angularInfluence, otherInfluences);
+  protected void influenceSteering(final float time, final Influence... otherInfluences) {
+    getSkill(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.class).influenceSteering(time, otherInfluences);
   }
   
   /**
-   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,fr.utbm.vi51.prj.drone.ia.evt.Influence[])}.
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
    * 
-   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,fr.utbm.vi51.prj.drone.ia.evt.Influence[])
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,fr.utbm.vi51.prj.drone.ia.agt.Influence[])
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(PhysicEnvironment.class)
@@ -120,14 +106,47 @@ public class AbstractOVNI extends Agent {
   }
   
   /**
-   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.evt.Influence[])}.
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
    * 
-   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.evt.Influence[])
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])
+   */
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  @ImportedCapacityFeature(PhysicEnvironment.class)
+  protected void influenceSteering(final float time, final float angularInfluence, final Influence... otherInfluences) {
+    getSkill(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.class).influenceSteering(time, angularInfluence, otherInfluences);
+  }
+  
+  /**
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
+   * 
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,fr.utbm.vi51.prj.drone.ia.agt.Influence[])
+   */
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  @ImportedCapacityFeature(PhysicEnvironment.class)
+  protected void influenceSteering(final float time, final Vector2f linearInfluence, final Influence... otherInfluences) {
+    getSkill(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.class).influenceSteering(time, linearInfluence, otherInfluences);
+  }
+  
+  /**
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
+   * 
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(PhysicEnvironment.class)
   protected void influenceSteering(final Vector2f linearInfluence, final float angularInfluence, final Influence... otherInfluences) {
     getSkill(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.class).influenceSteering(linearInfluence, angularInfluence, otherInfluences);
+  }
+  
+  /**
+   * See the capacity {@link fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])}.
+   * 
+   * @see fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#influenceSteering(float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence[])
+   */
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  @ImportedCapacityFeature(PhysicEnvironment.class)
+  protected void influenceSteering(final float time, final Vector2f linearInfluence, final float angularInfluence, final Influence... otherInfluences) {
+    getSkill(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.class).influenceSteering(time, linearInfluence, angularInfluence, otherInfluences);
   }
   
   /**
@@ -151,8 +170,8 @@ public class AbstractOVNI extends Agent {
   @FiredEvent(AgentSpawned.class)
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(Lifecycle.class)
-  protected UUID spawnInContext(final Class<? extends Agent> arg0, final AgentContext arg1, final Object... arg2) {
-    return getSkill(io.sarl.core.Lifecycle.class).spawnInContext(arg0, arg1, arg2);
+  protected UUID spawnInContext(final Class<? extends Agent> agentClass, final AgentContext context, final Object... params) {
+    return getSkill(io.sarl.core.Lifecycle.class).spawnInContext(agentClass, context, params);
   }
   
   /**
@@ -163,8 +182,8 @@ public class AbstractOVNI extends Agent {
   @FiredEvent(AgentSpawned.class)
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(Lifecycle.class)
-  protected UUID spawnInContextWithID(final Class<? extends Agent> arg0, final UUID arg1, final AgentContext arg2, final Object... arg3) {
-    return getSkill(io.sarl.core.Lifecycle.class).spawnInContextWithID(arg0, arg1, arg2, arg3);
+  protected UUID spawnInContextWithID(final Class<? extends Agent> agentClass, final UUID agentID, final AgentContext context, final Object... params) {
+    return getSkill(io.sarl.core.Lifecycle.class).spawnInContextWithID(agentClass, agentID, context, params);
   }
   
   /**

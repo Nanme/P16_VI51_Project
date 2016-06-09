@@ -15,35 +15,35 @@ import fr.utbm.vi51.prj.utils.tree.node.OctTreeNode;
  * @author renaud
  *
  */
-public final class OctTree<D> extends AbstractTree<D, OctTreeNode<D>>{
+public final class OctTree<D, N extends OctTreeNode<D,N>> extends AbstractTree<D, N>{
 	
 	/**
 	 * 
 	 */
-	public OctTree(OctTreeNode<D> root) {
+	public OctTree(N root) {
 		super(root);
 	}
 
 	@Override
-	public Iterator<OctTreeNode<D>> getDepthFirstIterator() {
-		return new DepthFirstIterator<D>(this);
+	public Iterator<N> getDepthFirstIterator() {
+		return new DepthFirstIterator(this);
 	}
 
 	@Override
-	public Iterator<OctTreeNode<D>> getBreadthFirstIterator() {
-		return new BreadthFirstIterator<D>(this);
+	public Iterator<N> getBreadthFirstIterator() {
+		return new BreadthFirstIterator<>(this);
 	}
 
 	@Override
-	public Iterator<OctTreeNode<D>> iterator() {
+	public Iterator<N> iterator() {
 		return getDepthFirstIterator();
 	}
 	
-	private static class DepthFirstIterator<D> implements Iterator<OctTreeNode<D>>{
+	private static class DepthFirstIterator<D, N extends OctTreeNode<D,N>> implements Iterator<N>{
 		
-		private final Stack<OctTreeNode<D>> stk = new Stack<>();
+		private final Stack<N> stk = new Stack<>();
 		
-		public DepthFirstIterator(OctTree<D> tree) {
+		public DepthFirstIterator(OctTree<D, N> tree) {
 			stk.push(tree.getRoot());
 		}
 
@@ -53,10 +53,10 @@ public final class OctTree<D> extends AbstractTree<D, OctTreeNode<D>>{
 		}
 
 		@Override
-		public OctTreeNode<D> next() {
-			OctTreeNode<D> node = stk.pop();
+		public N next() {
+			N node = stk.pop();
 			if (node.isLeaf()) {
-				for (OctTreeNode<D> val : node.getChildren()){
+				for (N val : node.getChildren()){
 					stk.push(val);
 				}
 			}
@@ -65,10 +65,10 @@ public final class OctTree<D> extends AbstractTree<D, OctTreeNode<D>>{
 		
 	}
 	
-	private static class BreadthFirstIterator<D> implements Iterator<OctTreeNode<D>>{
-		private final Queue<OctTreeNode<D>> queue = new LinkedList<OctTreeNode<D>>();
+	private static class BreadthFirstIterator<D, N extends OctTreeNode<D, N>> implements Iterator<N>{
+		private final Queue<N> queue = new LinkedList<N>();
 		
-		public BreadthFirstIterator(OctTree<D> tree) {
+		public BreadthFirstIterator(OctTree<D, N> tree) {
 			queue.add(tree.getRoot());
 		}
 		
@@ -78,11 +78,11 @@ public final class OctTree<D> extends AbstractTree<D, OctTreeNode<D>>{
 		}
 
 		@Override
-		public OctTreeNode<D> next() {
-			OctTreeNode<D> node = queue.poll();
+		public N next() {
+			N node = queue.poll();
 			
 			if (!node.isLeaf()){
-				for (OctTreeNode<D> val : node.getChildren()){
+				for (N val : node.getChildren()){
 					queue.add(val);
 				}
 			}

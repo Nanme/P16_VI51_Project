@@ -1,0 +1,115 @@
+package fr.utbm.vi51.prj.drone.ia.agt
+
+import fr.utbm.vi51.prj.drone.framework.math.Vector2f
+import fr.utbm.vi51.prj.drone.ia.^behavior.DynamicType
+import fr.utbm.vi51.prj.environment.EnvironmentListner
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import io.sarl.lang.core.Address
+import io.sarl.util.Scopes
+import java.util.List
+import java.util.UUID
+
+agent AgentEnvironment {
+	uses DefaultContextInteractions, Lifecycle
+	uses MapManager
+	
+	var listeners = <EnvironmentListner>newArrayList
+	var time = 0.0f
+	var Dt = 1.0f / 2.0f
+	val actions = <BehaviorOutput>newLinkedList
+	var adr : Address
+	var spaceID : UUID  
+	var countInit = 0
+	val agentNumber = 100
+
+	on Initialize{
+		spaceID = defaultSpace.getID.getID
+		adr=defaultSpace.getAddress(this.ID)		
+		//we create the environment *in the skill*
+		setSkill(typeof(MapManager), new DefaultMapManagerSkill(200, 200))
+		createMapSurroundings 
+	
+		
+		//we create the objects -> need to link the agents
+		for (var i=0;i<agentNumber;i++) {
+			var body = createUnit(100f, 1)
+			var agentParameters : List<Object> = newArrayList(spaceID,this.getID/*BehaviorType */)
+			var agentType = drone//AgentBody.AgentType //semantique de l'agent
+			
+			spawnInContextWithID(
+				agentType,
+				body.getId,
+				defaultContext,
+				agentParameters.toArray)
+		}
+		createWindow //mis a jour de la vue utilisateur
+	}
+	
+	on agentReady {
+		synchronized(this) {
+			countInit++
+			if(countInit==agentNumber){
+				emit(new RunBeginingOfStep,Scopes::addresses(adr))
+			}
+			
+		}
+	}
+	
+	on Influence /*[occurrence.time >= time]*/ {  
+
+		synchronized(this) {
+			var beh = new BehaviorOutput(occurrence.source.getUUID, occurrence.vector, DynamicType.STEERING)
+			this.actions.add(beh) 
+			if (this.actions.size >= agentNumber) {
+				emit(new RunEndOfStep,Scopes::addresses(adr))
+			}
+		}
+	}
+	
+	on RunBeginingOfStep {
+		synchronized(this){
+				this.actions.clear()
+				sendPerceptions(this.time) // Perception computation
+		}
+	}
+	/**
+	 * 
+	 * update world state, update the position of all objects, move to next step
+	*/	
+	on RunEndOfStep {
+		synchronized(this) {
+//			while(SpawnButtonRequestA){
+//					var body = createUnit(100f,1)
+//					var agentParameters : List<Object> = newArrayList(spaceID,this.getID/*BehaviorType */)
+//					var agentType = drone//AgentBody.AgentType //semantique de l'agent
+//					spawnInContextWithID(
+//					agentType,
+//					body.getId,
+//					defaultContext,
+//					agentParameters.toArray)
+//			}
+//			while(SpawnButtonRequestB){
+//					var body = createUnit(100f,2)
+//					var agentParameters : List<Object> = newArrayList(spaceID,this.getID/*BehaviorType */)
+//					var agentType = drone//AgentBody.AgentType //semantique de l'agent
+//					spawnInContextWithID(
+//					agentType,
+//					body.getId,
+//					defaultContext,
+//					agentParameters.toArray)
+//			}
+
+			resolveInfluences(actions)
+			//vider la liste d'actions
+			actions.clear()
+			updateTree
+			updateWindow 
+			time+=Dt
+			
+			emit(new RunBeginingOfStep,Scopes::addresses(adr))
+
+		}
+	}
+}

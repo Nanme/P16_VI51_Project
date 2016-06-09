@@ -5,12 +5,13 @@
 	<artifactId>p16_vi51_project_drones</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
+<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<natives.version>0.0.6</natives.version>
 		<lwjgl.version>2.8.2</lwjgl.version>
 		<junit.version>4.10</junit.version>
 		<sarl.version>0.3.1</sarl.version>
+		<janus.version>2.0.3.1</janus.version>
 	</properties>
 
 	<!-- <repositories> -->
@@ -58,21 +59,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.sarl.maven</groupId>
-			<artifactId>io.sarl.maven.sdk</artifactId>
-			<version>${sarl.version}</version>
+			<groupId>io.janusproject</groupId>
+			<artifactId>io.janusproject.kernel</artifactId>
+			<version>${janus.version}</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>io.sarl.maven</groupId> -->
-		<!-- <artifactId>sarl-maven-plugin</artifactId> -->
-		<!-- <version>0.3.0</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>io.sarl.lang</groupId> -->
-		<!-- <artifactId>io.sarl.lang</artifactId> -->
-		<!-- <version>0.3.1</version> -->
-		<!-- </dependency> -->
-
+		
 	</dependencies>
 
 	<build>

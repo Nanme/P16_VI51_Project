@@ -3,7 +3,7 @@ package fr.utbm.vi51.prj.drone.ia.behavior;
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f;
 import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput;
 import fr.utbm.vi51.prj.drone.ia.behavior.AlignBehaviour;
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType;
+import fr.utbm.vi51.prj.drone.ia.behavior.DynamicType;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 

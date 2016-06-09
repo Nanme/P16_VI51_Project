@@ -1,17 +1,15 @@
 package fr.utbm.vi51.prj.drone.ia.agt;
 
-import com.google.common.base.Objects;
 import fr.utbm.vi51.prj.drone.DroneDisplay;
-import fr.utbm.vi51.prj.drone.framework.math.MathUtil;
 import fr.utbm.vi51.prj.drone.framework.math.Point2f;
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f;
 import fr.utbm.vi51.prj.drone.ia.agt.AbstractOVNI;
 import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput;
-import fr.utbm.vi51.prj.drone.ia.behavior.SeekBehaviour;
+import fr.utbm.vi51.prj.drone.ia.agt.Perception;
+import fr.utbm.vi51.prj.drone.ia.agt.agentReady;
+import fr.utbm.vi51.prj.drone.ia.behavior.DynamicType;
+import fr.utbm.vi51.prj.drone.ia.behavior.SteeringAlignBehaviour;
 import fr.utbm.vi51.prj.drone.ia.behavior.SteeringSeekBehaviour;
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType;
-import fr.utbm.vi51.prj.drone.ia.evt.PerceptionEvent;
-import fr.utbm.vi51.prj.drone.ia.evt.SimulationAgentReady;
 import io.sarl.core.AgentSpawned;
 import io.sarl.core.DefaultContextInteractions;
 import io.sarl.core.Initialize;
@@ -32,47 +30,45 @@ import java.util.UUID;
 import javax.annotation.Generated;
 import javax.inject.Inject;
 
-/**
- * @author Lana Banana
- */
 @SarlSpecification("0.3")
 @SuppressWarnings("all")
 public class drone extends AbstractOVNI {
-  protected SeekBehaviour seekBehaviour;
+  protected SteeringSeekBehaviour seekBehaviour;
   
-  protected DroneDisplay dispDrone;
-  
-  protected final float STOP_RADIUS = (MathUtil.PI / 10f);
-  
-  protected final float SLOW_RADIUS = (MathUtil.PI / 4f);
-  
-  protected final float WANDER_CIRCLE_DISTANCE = 20f;
-  
-  protected final float WANDER_CIRCLE_RADIUS = 10f;
-  
-  protected final float WANDER_MAX_ROTATION = (MathUtil.PI / 4f);
+  protected SteeringAlignBehaviour alignBehaviour;
   
   @Percept
   public void _handle_Initialize_0(final Initialize occurrence) {
     super._handle_Initialize_0(occurrence);
-    boolean _equals = Objects.equal(this.behaviorType, DynamicType.STEERING);
-    if (_equals) {
-      SteeringSeekBehaviour _steeringSeekBehaviour = new SteeringSeekBehaviour();
-      this.seekBehaviour = _steeringSeekBehaviour;
-    }
-    SimulationAgentReady _simulationAgentReady = new SimulationAgentReady();
-    this.emit(_simulationAgentReady);
+    agentReady _agentReady = new agentReady();
+    this.emit(_agentReady);
   }
   
   @Percept
-  public void _handle_PerceptionEvent_1(final PerceptionEvent occurrence) {
-    Point2f target = new Point2f(15, 15);
-    Point2f _position = occurrence.body.getPosition();
+  public void _handle_Perception_1(final Perception occurrence) {
+    DroneDisplay _body = occurrence.body.getBody();
+    float _x = _body.getX();
+    DroneDisplay _body_1 = occurrence.body.getBody();
+    float _z = _body_1.getZ();
+    Point2f _position = new Point2f(_x, _z);
     Vector2f _currentLinearMotion = occurrence.body.getCurrentLinearMotion();
     float _length = _currentLinearMotion.getLength();
     float _maxLinearAcceleration = occurrence.body.getMaxLinearAcceleration();
-    BehaviorOutput o = this.seekBehaviour.runSeek(_position, _length, _maxLinearAcceleration, target);
-    this.emitInfluence(o);
+    Point2f _targetPosition = new Point2f(30, 30);
+    SteeringSeekBehaviour _steeringSeekBehaviour = new SteeringSeekBehaviour();
+    this.seekBehaviour = _steeringSeekBehaviour;
+    BehaviorOutput o1 = this.seekBehaviour.runSeek(_position, _length, _maxLinearAcceleration, _targetPosition);
+    Vector2f _angle = occurrence.body.getLinearVelocity();
+    float _maxAngularSpeed = occurrence.body.getCurrentAngularSpeed();
+    float _maxAngular = occurrence.body.getMaxAngularSpeed();
+    Vector2f _targetOrientatoin = new Vector2f(1, 1);
+    SteeringAlignBehaviour _steeringAlignBehaviour = new SteeringAlignBehaviour(2, 3, 4);
+    this.alignBehaviour = _steeringAlignBehaviour;
+    BehaviorOutput o2 = this.alignBehaviour.runAlign(_angle, _maxAngularSpeed, _maxAngular, _targetOrientatoin);
+    Vector2f _linear = o1.getLinear();
+    float _angular = o2.getAngular();
+    BehaviorOutput o3 = new BehaviorOutput(null, _linear, _angular, DynamicType.STEERING);
+    this.emitInfluence(o3, occurrence.time);
   }
   
   /**
@@ -82,8 +78,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected void emit(final Event arg0) {
-    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(arg0);
+  protected void emit(final Event e) {
+    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(e);
   }
   
   /**
@@ -93,8 +89,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected void emit(final Event arg0, final Scope<Address> arg1) {
-    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(arg0, arg1);
+  protected void emit(final Event e, final Scope<Address> scope) {
+    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(e, scope);
   }
   
   /**
@@ -137,8 +133,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultContext(final AgentContext arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(arg0);
+  protected boolean isDefaultContext(final AgentContext context) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(context);
   }
   
   /**
@@ -148,8 +144,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultContext(final UUID arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(arg0);
+  protected boolean isDefaultContext(final UUID contextID) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(contextID);
   }
   
   /**
@@ -159,8 +155,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultSpace(final Space arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(arg0);
+  protected boolean isDefaultSpace(final Space space) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(space);
   }
   
   /**
@@ -170,8 +166,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultSpace(final SpaceID arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(arg0);
+  protected boolean isDefaultSpace(final SpaceID space) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(space);
   }
   
   /**
@@ -181,8 +177,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultSpace(final UUID arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(arg0);
+  protected boolean isDefaultSpace(final UUID space) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(space);
   }
   
   /**
@@ -192,8 +188,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isInDefaultSpace(final Event arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isInDefaultSpace(arg0);
+  protected boolean isInDefaultSpace(final Event event) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isInDefaultSpace(event);
   }
   
   /**
@@ -203,8 +199,8 @@ public class drone extends AbstractOVNI {
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected void receive(final UUID arg0, final Event arg1) {
-    getSkill(io.sarl.core.DefaultContextInteractions.class).receive(arg0, arg1);
+  protected void receive(final UUID receiver, final Event e) {
+    getSkill(io.sarl.core.DefaultContextInteractions.class).receive(receiver, e);
   }
   
   /**
@@ -215,8 +211,8 @@ public class drone extends AbstractOVNI {
   @FiredEvent(AgentSpawned.class)
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected UUID spawn(final Class<? extends Agent> arg0, final Object... arg1) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).spawn(arg0, arg1);
+  protected UUID spawn(final Class<? extends Agent> aAgent, final Object... params) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).spawn(aAgent, params);
   }
   
   /**

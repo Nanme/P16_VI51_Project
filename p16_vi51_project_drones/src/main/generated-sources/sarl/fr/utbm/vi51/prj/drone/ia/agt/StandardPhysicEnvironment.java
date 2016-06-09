@@ -20,14 +20,12 @@
  */
 package fr.utbm.vi51.prj.drone.ia.agt;
 
+import com.google.common.base.Objects;
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f;
 import fr.utbm.vi51.prj.drone.framework.util.AddressUUIDScope;
+import fr.utbm.vi51.prj.drone.ia.agt.Influence;
+import fr.utbm.vi51.prj.drone.ia.agt.MotionInfluence;
 import fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment;
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType;
-import fr.utbm.vi51.prj.drone.ia.evt.Influence;
-import fr.utbm.vi51.prj.drone.ia.evt.InfluenceEvent;
-import fr.utbm.vi51.prj.drone.ia.evt.KillInfluence;
-import fr.utbm.vi51.prj.drone.ia.evt.MotionInfluence;
 import io.sarl.core.AgentSpawned;
 import io.sarl.core.Behaviors;
 import io.sarl.core.DefaultContextInteractions;
@@ -49,11 +47,8 @@ import io.sarl.lang.core.Skill;
 import io.sarl.lang.core.Space;
 import io.sarl.lang.core.SpaceID;
 import io.sarl.util.OpenEventSpace;
-import java.lang.reflect.Array;
-import java.util.List;
 import java.util.UUID;
 import javax.annotation.Generated;
-import org.eclipse.xtext.xbase.lib.Conversions;
 
 @SuppressWarnings("all")
 public class StandardPhysicEnvironment extends Skill implements PhysicEnvironment {
@@ -79,75 +74,61 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
         this.physicSpace = _space;
         Thread.yield();
       }
-    } while((this.physicSpace == null));
-    EventListener _asEventListener = this.asEventListener();
-    this.physicSpace.register(_asEventListener);
+    } while(Objects.equal(this.physicSpace, null));
     Agent _owner = this.getOwner();
     UUID _iD = _owner.getID();
     Address _address = this.physicSpace.getAddress(_iD);
     this.myAdr = _address;
   }
   
-  @Override
-  public void uninstall() {
-    KillInfluence _killInfluence = new KillInfluence();
-    InfluenceEvent event = new InfluenceEvent(_killInfluence);
-    event.setSource(this.myAdr);
-    AddressUUIDScope _addressUUIDScope = new AddressUUIDScope(this.environmentID);
-    this.physicSpace.emit(event, _addressUUIDScope);
-    this.physicSpace = null;
-  }
-  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
   @DefaultValueSource
-  @Override
-  public void influenceSteering(@DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment#INFLUENCESTEERING_0") final Vector2f linearInfluence, @DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment#INFLUENCESTEERING_1") final float angularInfluence, final Influence... otherInfluences) {
-    MotionInfluence mi = null;
-    boolean _tripleEquals = linearInfluence.operator_tripleEquals(null);
-    if (_tripleEquals) {
-      MotionInfluence _motionInfluence = new MotionInfluence(DynamicType.STEERING, angularInfluence);
-      mi = _motionInfluence;
-    } else {
-      MotionInfluence _motionInfluence_1 = new MotionInfluence(DynamicType.STEERING, linearInfluence, angularInfluence);
-      mi = _motionInfluence_1;
-    }
-    this.emitInfluences(mi, otherInfluences);
+  public void influenceAttack(@DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment#INFLUENCEATTACK_0") final int attackSpeed, @DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment#INFLUENCEATTACK_1") final UUID target, @DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment#INFLUENCEATTACK_2") final float time) {
   }
   
   /**
-   * Default value for the parameter linearInfluence
+   * Default value for the parameter attackSpeed
+   */
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  @SarlSourceCode(" 0")
+  private final static int ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_0 = 0;
+  
+  /**
+   * Default value for the parameter target
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @SarlSourceCode(" null")
-  private final static Vector2f ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0 = null;
+  private final static UUID ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_1 = null;
   
   /**
-   * Default value for the parameter angularInfluence
+   * Default value for the parameter time
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @SarlSourceCode(" 0f")
-  private final static float ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_1 = 0f;
+  private final static float ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_2 = 0f;
   
-  public void emitInfluences(final MotionInfluence motionInfluence, final Influence... otherInfluences) {
-    Influence[] influences = null;
-    boolean _isEmpty = ((List<Influence>)Conversions.doWrapArray(otherInfluences)).isEmpty();
-    if (_isEmpty) {
-      Object _newInstance = Array.newInstance(Influence.class, 1);
-      influences = ((Influence[]) _newInstance);
-      influences[0] = motionInfluence;
-    } else {
-      int _length = otherInfluences.length;
-      int _plus = (_length + 1);
-      Object _newInstance_1 = Array.newInstance(Influence.class, _plus);
-      influences = ((Influence[]) _newInstance_1);
-      influences[0] = motionInfluence;
-      int _length_1 = otherInfluences.length;
-      System.arraycopy(otherInfluences, 0, influences, 1, _length_1);
-    }
-    InfluenceEvent event = new InfluenceEvent(influences);
-    event.setSource(this.myAdr);
+  @DefaultValueSource
+  @Override
+  public void influenceSteering(@DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.StandardPhysicEnvironment#INFLUENCESTEERING_0") final float time, @DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#INFLUENCESTEERING_1") final Vector2f linearInfluence, @DefaultValue("fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment#INFLUENCESTEERING_2") final float angularInfluence, final Influence... otherInfluences) {
+    MotionInfluence event1 = new MotionInfluence(time, linearInfluence, angularInfluence);
+    event1.setSource(this.myAdr);
     AddressUUIDScope _addressUUIDScope = new AddressUUIDScope(this.environmentID);
-    this.physicSpace.emit(event, _addressUUIDScope);
+    this.physicSpace.emit(event1, _addressUUIDScope);
   }
+  
+  /**
+   * Default value for the parameter time
+   */
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  @SarlSourceCode(" 0f")
+  private final static float ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0 = 0f;
   
   /**
    * See the capacity {@link io.sarl.core.DefaultContextInteractions#emit(io.sarl.lang.core.Event)}.
@@ -156,8 +137,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected void emit(final Event arg0) {
-    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(arg0);
+  protected void emit(final Event e) {
+    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(e);
   }
   
   /**
@@ -167,8 +148,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected void emit(final Event arg0, final Scope<Address> arg1) {
-    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(arg0, arg1);
+  protected void emit(final Event e, final Scope<Address> scope) {
+    getSkill(io.sarl.core.DefaultContextInteractions.class).emit(e, scope);
   }
   
   /**
@@ -211,8 +192,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultContext(final AgentContext arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(arg0);
+  protected boolean isDefaultContext(final AgentContext context) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(context);
   }
   
   /**
@@ -222,8 +203,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultContext(final UUID arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(arg0);
+  protected boolean isDefaultContext(final UUID contextID) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultContext(contextID);
   }
   
   /**
@@ -233,8 +214,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultSpace(final Space arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(arg0);
+  protected boolean isDefaultSpace(final Space space) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(space);
   }
   
   /**
@@ -244,8 +225,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultSpace(final SpaceID arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(arg0);
+  protected boolean isDefaultSpace(final SpaceID space) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(space);
   }
   
   /**
@@ -255,8 +236,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isDefaultSpace(final UUID arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(arg0);
+  protected boolean isDefaultSpace(final UUID space) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isDefaultSpace(space);
   }
   
   /**
@@ -266,8 +247,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected boolean isInDefaultSpace(final Event arg0) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).isInDefaultSpace(arg0);
+  protected boolean isInDefaultSpace(final Event event) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).isInDefaultSpace(event);
   }
   
   /**
@@ -277,8 +258,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected void receive(final UUID arg0, final Event arg1) {
-    getSkill(io.sarl.core.DefaultContextInteractions.class).receive(arg0, arg1);
+  protected void receive(final UUID receiver, final Event e) {
+    getSkill(io.sarl.core.DefaultContextInteractions.class).receive(receiver, e);
   }
   
   /**
@@ -289,8 +270,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
   @FiredEvent(AgentSpawned.class)
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(DefaultContextInteractions.class)
-  protected UUID spawn(final Class<? extends Agent> arg0, final Object... arg1) {
-    return getSkill(io.sarl.core.DefaultContextInteractions.class).spawn(arg0, arg1);
+  protected UUID spawn(final Class<? extends Agent> aAgent, final Object... params) {
+    return getSkill(io.sarl.core.DefaultContextInteractions.class).spawn(aAgent, params);
   }
   
   /**
@@ -311,8 +292,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(Behaviors.class)
-  protected Behavior registerBehavior(final Behavior arg0) {
-    return getSkill(io.sarl.core.Behaviors.class).registerBehavior(arg0);
+  protected Behavior registerBehavior(final Behavior attitude) {
+    return getSkill(io.sarl.core.Behaviors.class).registerBehavior(attitude);
   }
   
   /**
@@ -322,8 +303,8 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(Behaviors.class)
-  protected Behavior unregisterBehavior(final Behavior arg0) {
-    return getSkill(io.sarl.core.Behaviors.class).unregisterBehavior(arg0);
+  protected Behavior unregisterBehavior(final Behavior attitude) {
+    return getSkill(io.sarl.core.Behaviors.class).unregisterBehavior(attitude);
   }
   
   /**
@@ -333,28 +314,142 @@ public class StandardPhysicEnvironment extends Skill implements PhysicEnvironmen
    */
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @ImportedCapacityFeature(Behaviors.class)
-  protected void wake(final Event arg0) {
-    getSkill(io.sarl.core.Behaviors.class).wake(arg0);
+  protected void wake(final Event evt) {
+    getSkill(io.sarl.core.Behaviors.class).wake(evt);
   }
   
-  @DefaultValueUse("fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.evt.Influence*")
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack() {
+    influenceAttack(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_0, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_1, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_2);
+  }
+  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack(final float time) {
+    influenceAttack(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_0, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_1, time);
+  }
+  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack(final int attackSpeed) {
+    influenceAttack(attackSpeed, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_1, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_2);
+  }
+  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack(final UUID target) {
+    influenceAttack(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_0, target, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_2);
+  }
+  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack(final int attackSpeed, final float time) {
+    influenceAttack(attackSpeed, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_1, time);
+  }
+  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack(final int attackSpeed, final UUID target) {
+    influenceAttack(attackSpeed, target, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_2);
+  }
+  
+  /**
+   * override uninstall() {
+   * var ^event = new InfluenceEvent(new KillInfluence)
+   * ^event.source = this.myAdr
+   * this.physicSpace.emit(^event, new AddressUUIDScope(this.environmentID))
+   * this.physicSpace = null
+   * }
+   */
+  @DefaultValueUse("int,java.util.UUID,float")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceAttack(final UUID target, final float time) {
+    influenceAttack(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCEATTACK_0, target, time);
+  }
+  
+  @DefaultValueUse("float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence*")
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   @Override
+  public final void influenceSteering(final Vector2f linearInfluence, final float angularInfluence, final Influence... otherInfluences) {
+    influenceSteering(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0, linearInfluence, angularInfluence, otherInfluences);
+  }
+  
+  @DefaultValueUse("float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence*")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
   public final void influenceSteering(final Influence... otherInfluences) {
-    influenceSteering(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_1, otherInfluences);
+    influenceSteering(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_1, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_2, otherInfluences);
   }
   
-  @DefaultValueUse("fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.evt.Influence*")
+  @DefaultValueUse("float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence*")
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
-  @Override
-  public final void influenceSteering(final float angularInfluence, final Influence... otherInfluences) {
-    influenceSteering(___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0, angularInfluence, otherInfluences);
+  public final void influenceSteering(final float time, final Influence... otherInfluences) {
+    influenceSteering(time, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_1, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_2, otherInfluences);
   }
   
-  @DefaultValueUse("fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.evt.Influence*")
+  @DefaultValueUse("float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence*")
   @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
-  @Override
   public final void influenceSteering(final Vector2f linearInfluence, final Influence... otherInfluences) {
-    influenceSteering(linearInfluence, ___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_1, otherInfluences);
+    influenceSteering(fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_0, linearInfluence, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_2, otherInfluences);
+  }
+  
+  @DefaultValueUse("float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence*")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceSteering(final float time, final float angularInfluence, final Influence... otherInfluences) {
+    influenceSteering(time, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_1, angularInfluence, otherInfluences);
+  }
+  
+  @DefaultValueUse("float,fr.utbm.vi51.prj.drone.framework.math.Vector2f,float,fr.utbm.vi51.prj.drone.ia.agt.Influence*")
+  @Generated("io.sarl.lang.jvmmodel.SARLJvmModelInferrer")
+  public final void influenceSteering(final float time, final Vector2f linearInfluence, final Influence... otherInfluences) {
+    influenceSteering(time, linearInfluence, fr.utbm.vi51.prj.drone.ia.agt.PhysicEnvironment.___FORMAL_PARAMETER_DEFAULT_VALUE_INFLUENCESTEERING_2, otherInfluences);
   }
 }

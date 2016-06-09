@@ -3,7 +3,6 @@ package fr.utbm.vi51.prj.drone.ia.^behavior
 import fr.utbm.vi51.prj.drone.framework.math.Point2f
 import fr.utbm.vi51.prj.drone.framework.math.Vector2f
 import fr.utbm.vi51.prj.drone.ia.agt.BehaviorOutput
-import fr.utbm.vi51.prj.drone.ia.evt.DynamicType
 
 class SteeringSeekBehaviour implements SeekBehaviour {
 
